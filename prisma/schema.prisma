@@ -1,0 +1,136 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model EmailCode {
+  id        Int      @id @default(autoincrement())
+  email     String
+  emailCode String   @map("email_code")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("email_code")
+}
+
+model User {
+  id          Int           @id @default(autoincrement())
+  name        String
+  email       String        @unique
+  nickname    String        @unique
+  password    String
+  phoneNumber String?       @map("phone_number")
+  address     String
+  role        Role
+  points      Int
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+
+  restaurants   Restaurants[]
+  notifications Notifications[]
+  reviews       Reviews[]
+  orders Orders[]
+
+  @@map("user")
+}
+
+model Restaurants {
+  id                Int          @id @default(autoincrement())
+  userId            Int          @map("user_id")
+  restaurantName    String       @map("restaurant_name")
+  restaurantAddress String       @map("restaurant_address")
+  restaurantType    String       @map("restaurant_type")
+  createdAt         DateTime     @default(now()) @map("created_at")
+  updatedAt         DateTime     @updatedAt @map("updated_at")
+
+  user          User          @relation(fields: [userId], references: [id])
+  notifications Notifications[]
+  reviews       Reviews[]
+  foods         Foods[]
+  orders Orders[]
+
+  @@map("restaurants")
+}
+
+model Notifications {
+  id           Int      @id @default(autoincrement())
+  userId       Int      @map("user_id")
+  restaurantId Int      @map("restaurant_id")
+  orderId      Int      @map("order_id")
+  message      String
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  user        User        @relation(fields: [userId], references: [id])
+  restaurants Restaurants @relation(fields: [restaurantId], references: [id])
+  orders      Orders      @relation(fields: [orderId], references: [id])
+
+  @@map("notifications")
+}
+
+model Reviews {
+  id           Int      @id @default(autoincrement()) @db.UnsignedInt
+  userId       Int      @map("user_id")
+  restaurantId Int      @map("restaurant_id")
+  orderId      Int      @map("order_id")
+  rate         String
+  content      String
+  image        String
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  user        User        @relation(fields: [userId], references: [id])
+  restaurants Restaurants @relation(fields: [restaurantId], references: [id])
+  orders      Orders      @relation(fields: [orderId], references: [id])
+
+  @@map("reviews")
+}
+
+model Foods {
+  id           Int          @id @default(autoincrement())
+  restaurantId Int          @map("restaurant_id")
+  name         String
+  price        Int
+  image        String
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+
+  restaurants Restaurants @relation(fields: [restaurantId], references: [id])
+  orders      Orders[]
+
+  @@map("foods")
+}
+
+model Orders {
+  id          Int        @id @default(autoincrement())
+  userId      Int
+  restaurantId Int
+  foodsId     Int
+  orderPrice  Int
+  state       StateEnum
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+
+  user        User        @relation(fields: [userId], references: [id])
+  restaurants Restaurants @relation(fields: [restaurantId], references: [id])
+  foods       Foods       @relation(fields: [foodsId], references: [id])
+  notifications Notifications[]
+  reviews     Reviews[]
+
+  @@map("orders")
+}
+
+enum Role {
+  USER
+  OWNER
+}
+
+enum StateEnum {
+  PREPARING
+  DELIVERING
+  DELIVERED
+}
