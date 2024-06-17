@@ -13,7 +13,7 @@ app.use(requestLogger);
 app.use(globalErrorHandler);
 
 app.get('/api', (req, res) => {
-  return res.status(200).json(console.log('테스트 성공하였습니다.'));
+  return res.status(200).json({message :'테스트 성공하였습니다.'});
 });
 
 app.listen(ENV_KEY.PORT, async () => {
