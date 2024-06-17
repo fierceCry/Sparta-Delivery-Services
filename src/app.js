@@ -15,9 +15,9 @@ app.use(requestLogger);
 app.use(globalErrorHandler);
 
 app.get('/api', (req, res) => {
-  return res.status(200).json(console.log('테스트 성공하였습니다.'));
+  return res.status(200).json({ message: '테스트 성공하였습니다.' });
 });
 
-app.listen(3000, async () => {
-  console.log(3000, '포트로 서버가 열렸습니다.');
+app.listen(ENV_KEY.PORT, async () => {
+  console.log(ENV_KEY.PORT, '포트로 서버가 열렸습니다.');
 });

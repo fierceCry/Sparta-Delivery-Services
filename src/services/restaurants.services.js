@@ -2,20 +2,26 @@ import { RestaurantsRepository } from '../repositories/restaurants.repository.js
 
 export class RestaurantsService {
   restaurantsRepository = new RestaurantsRepository();
-  getRestaurants = async (id) => {
-    const restaurants = await this.restaurantsRepository.getRestaurants(id);
-    const {
+  updateRestaurants = async (
+    id,
+    restaurantName,
+    restaurantAddress,
+    restaurantType,
+    restaurantNumber
+  ) => {
+    const restaurants = await this.restaurantsRepository.updateRestaurants(
+      id,
       restaurantName,
       restaurantAddress,
       restaurantType,
-      restaurantNumber,
-    } = restaurants;
+      restaurantNumber
+    );
     return {
       id: restaurants.id,
-      restaurantName,
-      restaurantAddress,
-      restaurantType,
-      restaurantNumber,
+      restaurantName: restaurants.restaurantName,
+      restaurantAddress: restaurants.restaurantAddress,
+      restaurantType: restaurants.restaurantType,
+      restaurantNumber: restaurants.restaurantNumber,
     };
   };
 }
