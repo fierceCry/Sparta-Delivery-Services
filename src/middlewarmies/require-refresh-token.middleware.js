@@ -8,7 +8,7 @@ import {
 } from '../errors/http.error.js';
 import { UserRepository } from '../repositories/users.repository.js';
 
-const userRepository = new UserRepository();
+const userRepository = new UserRepository(prisma);
 
 /** RefreshToken 토큰 검증 및 재발급 미들웨어 **/
 const refreshTokenMiddleware = async (req, res, next) => {
