@@ -1,15 +1,17 @@
+import { UsersRepository } from '../repositories/users.repository.js';
+
 export class UsersService {
   usersRepository = new UsersRepository();
-  getUser = async (userId) => {
-    const user = await this.usersRepository.getUser(userId);
-
+  getUser = async (id) => {
+    const user = await this.usersRepository.getUser(id);
+    const { name, email, nickname, phonenumber, address } = user;
     return {
       id: user.id,
-      name: user.name,
-      email: user.email,
-      nickname: user.nickname,
-      phonenumber: user.phonenumber,
-      address: user.address,
+      name,
+      email,
+      nickname,
+      phonenumber,
+      address,
     };
   };
 }

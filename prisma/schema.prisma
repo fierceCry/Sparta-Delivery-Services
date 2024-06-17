@@ -45,6 +45,7 @@ model Restaurants {
   restaurantName    String       @map("restaurant_name")
   restaurantAddress String       @map("restaurant_address")
   restaurantType    String       @map("restaurant_type")
+  restaurantNumber  String       @map("restaurant_number")
   createdAt         DateTime     @default(now()) @map("created_at")
   updatedAt         DateTime     @updatedAt @map("updated_at")
 

@@ -1,9 +1,10 @@
-import prisma from '../utils/utils.prisma.js';
+import { prisma } from '../utils/utils.prisma.js';
 
 export class UsersRepository {
-  getUser = async (userId) => {
-    const user = await prisma.users.findFirst({
-      where: { userId },
+  getUser = async (id) => {
+    console.log(id);
+    const user = await prisma.Users.findFirst({
+      where: { id },
     });
 
     return user;
