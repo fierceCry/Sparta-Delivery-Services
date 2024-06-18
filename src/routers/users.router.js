@@ -1,11 +1,17 @@
 import express from 'express';
-import { UsersController } from '../controllers/users.controllers.js';
+import { UserController } from '../controllers/users.controllers.js';
+import { UserService } from '../services/users.services.js';
+import { UserRepository } from '../repositories/users.repository.js';
 import { authMiddleware } from '../middlewarmies/require-access-token.middleware.js';
+import { prisma } from '../utils/utils.prisma.js';
 
 const usersRouter = express.Router();
 
-const usersController = new UsersController();
+const userRepository = new UserRepository(prisma);
+const userService = new UserService(userRepository);
+const userController = new UserController(userService);
 
-usersRouter.get('/me', authMiddleware, usersController.getUser);
+usersRouter.get('/me', authMiddleware, userController.getUser);
+usersRouter.patch('/me', authMiddleware, userController.updateUser);
 
 export { usersRouter };

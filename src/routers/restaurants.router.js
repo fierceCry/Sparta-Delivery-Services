@@ -12,7 +12,7 @@ restaurantsRouter.get(
   authMiddleware,
   restaurantsController.getRestaurants
 );
-restaurantsRouter.post(
+restaurantsRouter.patch(
   '/me',
   authMiddleware,
   restaurantUpdateValidator,

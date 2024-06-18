@@ -18,8 +18,7 @@ export class RestaurantsService {
     );
     return {
       ...restaurants,
-      bossPassword: _,
-      updatedAt: new Date(),
+      bossPassword: undefined,
     };
   };
 }

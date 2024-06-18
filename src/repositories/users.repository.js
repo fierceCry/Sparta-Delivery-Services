@@ -21,4 +21,19 @@ export class UserRepository {
       });
     }
   };
+
+  updateUser = async (id, name, nickname, phoneNumber, address) => {
+    console.log(id);
+    const user = await this.prisma.Users.update({
+      where: { id: +id },
+      data: {
+        name,
+        nickname,
+        phoneNumber,
+        address,
+        updatedAt: new Date(),
+      },
+    });
+    return user;
+  };
 }

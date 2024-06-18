@@ -4,13 +4,13 @@ import { HTTP_STATUS } from '../constants/http-status.constant.js';
 export class RestaurantsController {
   restaurantsService = new RestaurantsService();
   getRestaurants = async (req, res) => {
-    const reqRestaurant = req.user;
+    const restaurant = req.user;
 
-    const restaurant = { ...reqRestaurant, bossPassword: undefined };
+    const data = { ...restaurant, bossPassword: undefined };
 
     return res.status(HTTP_STATUS.OK).json({
       message: '정상적으로 정보조회가 완료되었습니다.',
-      data: restaurant,
+      data,
     });
   };
 

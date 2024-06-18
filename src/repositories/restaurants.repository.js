@@ -15,6 +15,7 @@ export class RestaurantsRepository {
         restaurantAddress,
         restaurantType,
         restaurantPhoneNumber,
+        updatedAt: new Date(),
       },
     });
     return restaurants;
