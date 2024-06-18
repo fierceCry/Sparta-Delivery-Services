@@ -1,10 +1,10 @@
 import Joi from 'joi';
-import { REVIEW_RATE } from '../../constants/review.constants.js';
+import { Rating } from '../../constants/review.constants.js';
 
 const schema = Joi.object({
   rate: Joi.string()
     .required()
-    .valid(...Object.values(REVIEW_RATE))
+    .valid(...Object.values(Rating))
     .messages({
       'any.required': '평점을 입력해 주세요.',
     }),

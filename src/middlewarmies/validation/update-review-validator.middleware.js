@@ -1,9 +1,9 @@
 import Joi from 'joi';
-import { REVIEW_RATE } from '../../constants/review.constants.js';
+import { Rating } from '../../constants/review.constants.js';
 
 const schema = Joi.object({
   rate: Joi.string()
-    .valid(...Object.values(REVIEW_RATE))
+    .valid(...Object.values(Rating))
     .optional(),
   content: Joi.string().optional(),
   imageUrl: Joi.string().optional().uri(),

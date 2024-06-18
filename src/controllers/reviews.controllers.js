@@ -1,3 +1,4 @@
+import { getStarRating } from '../constants/review.constants.js';
 export class ReviewsController {
   constructor(reviewsService) {
     this.reviewsService = reviewsService;
@@ -9,10 +10,13 @@ export class ReviewsController {
       const { customerordersstorageId } = req.params;
       const { rate, content, imageUrl } = req.body;
 
+      // 별표로 변환
+      const starRating = getStarRating(rate);
+
       const data = await this.reviewsService.create(
         user,
         customerordersstorageId,
-        rate,
+        starRating,
         content,
         imageUrl
       );
@@ -33,7 +37,7 @@ export class ReviewsController {
       const user = req.user;
       const { sort } = req.query;
 
-      const data = await this.reviewsService.readMany(user, sort);
+      const data = await this.reviewsService.readMany(user, sort || 'desc');
 
       res.status(200).json({ status: 200, data });
     } catch (error) {
@@ -63,10 +67,13 @@ export class ReviewsController {
       const { reviewId } = req.params;
       const { rate, content, imageUrl } = req.body;
 
+      // 별표로 변환
+      const starRating = getStarRating(rate);
+
       const data = await this.reviewsService.update(
-        user,
         reviewId,
-        rate,
+        user,
+        starRating,
         content,
         imageUrl
       );
@@ -81,7 +88,7 @@ export class ReviewsController {
     }
   };
 
-  /* 리뷰 및 평점 목록 삭제 */
+  /* 리뷰 및 평점 삭제 */
   delete = async (req, res, next) => {
     try {
       const user = req.user;

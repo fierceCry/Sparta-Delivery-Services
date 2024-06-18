@@ -6,10 +6,12 @@ export class ReviewsRepository {
 
   /*주문 조회*/
   findOrderById = async (customerordersstorageId, userId) => {
-    const order = await this.prisma.customer_orders_storage.findUnique({
+    const order = await this.prisma.customerOrdersStorage.findUnique({
       where: { id: +customerordersstorageId },
       include: { users: true, restaurants: true },
     });
+
+    //console.log(`found ${order}`);
 
     // 주문이 존재하지 않거나, 주문이 사용자와 관계없을 때
     if (!order || order.userId !== userId) {
@@ -41,16 +43,16 @@ export class ReviewsRepository {
   };
 
   /* 리뷰 및 평점 목록 조회 */
-  readMany = async (user, sort) => {
+  readMany = async (user, sort = 'desc') => {
     //리뷰 목록 정렬
     const sortOrder = sort.toLowerCase() === 'asc' ? 'asc' : 'desc';
 
     const reviews = await this.prisma.reviews.findMany({
-      where: { userId: user.id },
+      where: { userId: +user.id },
       orderBy: { createdAt: sortOrder },
       select: {
         users: { select: { nickname: true } },
-        restaurants: { select: { name: true } },
+        restaurants: { select: { restaurantName: true } },
         rate: true,
         content: true,
         imageUrl: true,
@@ -62,7 +64,7 @@ export class ReviewsRepository {
     //출력 내용
     const data = reviews.map((review) => ({
       userNickname: review.users.nickname,
-      restaurantName: review.restaurants.name,
+      restaurantName: review.restaurants.restaurantName,
       rate: review.rate,
       content: review.content,
       imageUrl: review.imageUrl,
@@ -73,13 +75,13 @@ export class ReviewsRepository {
   };
 
   /* 리뷰 및 평점 상세 조회 */
-  readOne = async (user, reviewId) => {
+  readOne = async (reviewId, user) => {
     let data = await this.prisma.reviews.findFirst({
-      where: { id: +reviewId, userId: user.id },
+      where: { id: +reviewId, userId: +user.id },
       select: {
         id: true,
         users: { select: { nickname: true } },
-        restaurants: { select: { name: true } },
+        restaurants: { select: { restaurantName: true } },
         rate: true,
         content: true,
         imageUrl: true,
@@ -91,10 +93,11 @@ export class ReviewsRepository {
     if (!data) {
       return null;
     }
+
     data = {
       id: data.id,
       userNickname: data.users.nickname,
-      restaurantName: data.restaurants.name,
+      restaurantName: data.restaurants.restaurantName,
       rate: data.rate,
       content: data.content,
       imageUrl: data.imageUrl,
@@ -108,7 +111,7 @@ export class ReviewsRepository {
   /* 리뷰 및 평점 수정 */
   update = async (user, reviewId, rate, content, imageUrl) => {
     const data = await this.prisma.reviews.update({
-      where: { id: +reviewId, userId: user.id },
+      where: { id: +reviewId, userId: +user.id },
       data: {
         ...(rate && { rate }),
         ...(content && { content }),
@@ -118,11 +121,11 @@ export class ReviewsRepository {
     return data;
   };
 
-  /* 리뷰 및 평점 목록 삭제 */
-  delete = async (userId, reviewId) => {
-    //리뷰 삭제
-    const data = await prisma.reviews.delete({
-      where: { id: +reviewId, userId: +userId },
+  /* 리뷰 및 평점 삭제 */
+  delete = async (user, reviewId) => {
+    // 리뷰 삭제
+    const data = await this.prisma.reviews.delete({
+      where: { id: +reviewId, userId: +user.id },
     });
     return { id: data.id };
   };

@@ -45,8 +45,8 @@ export class ReviewsService {
   };
 
   /* 리뷰 및 평점 수정 */
-  update = async (user, reviewId, rate, content, imageUrl) => {
-    let data = await this.reviewsRepository.readOne(user, reviewId);
+  update = async (reviewId, user, rate, content, imageUrl) => {
+    let data = await this.reviewsRepository.readOne(reviewId, user);
 
     if (!data) {
       throw new HttpError.NotFound('존재하지 않는 리뷰입니다.');
@@ -63,16 +63,16 @@ export class ReviewsService {
     return data;
   };
 
-  /* 리뷰 및 평점 목록 삭제 */
+  /* 리뷰 및 평점 삭제 */
   delete = async (user, reviewId) => {
-    let data = await this.reviewsRepository.readOne(user, reviewId);
+    let data = await this.reviewsRepository.readOne(reviewId, user);
 
     if (!data) {
       throw new HttpError.NotFound('존재하지 않는 리뷰입니다.');
     }
 
-    //리뷰 삭제
-    data = await this.reviewsRepository.delete(user.id, reviewId);
+    // 리뷰 삭제
+    data = await this.reviewsRepository.delete(user, reviewId);
 
     return data;
   };
