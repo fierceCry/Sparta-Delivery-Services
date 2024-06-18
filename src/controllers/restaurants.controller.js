@@ -18,7 +18,7 @@ export class RestaurantsController {
       restaurantName,
       restaurantAddress,
       restaurantType,
-      restaurantNumber,
+      restaurantPhoneNumber,
     } = req.body;
 
     const restaurants = await this.restaurantsService.updateRestaurants(
@@ -26,7 +26,7 @@ export class RestaurantsController {
       restaurantName,
       restaurantAddress,
       restaurantType,
-      restaurantNumber
+      restaurantPhoneNumber
     );
 
     return res.status(HTTP_STATUS.CREATED).json({

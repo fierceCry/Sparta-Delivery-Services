@@ -7,21 +7,21 @@ export class RestaurantsService {
     restaurantName,
     restaurantAddress,
     restaurantType,
-    restaurantNumber
+    restaurantPhoneNumber
   ) => {
     const restaurants = await this.restaurantsRepository.updateRestaurants(
       id,
       restaurantName,
       restaurantAddress,
       restaurantType,
-      restaurantNumber
+      restaurantPhoneNumber
     );
     return {
       id: restaurants.id,
       restaurantName: restaurants.restaurantName,
       restaurantAddress: restaurants.restaurantAddress,
       restaurantType: restaurants.restaurantType,
-      restaurantNumber: restaurants.restaurantNumber,
+      restaurantPhoneNumber: restaurants.restaurantPhoneNumber,
     };
   };
 }
