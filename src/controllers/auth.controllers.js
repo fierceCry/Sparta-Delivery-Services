@@ -7,7 +7,7 @@ export class AuthController {
 
   signUp = async (req, res, next) => {
     try {
-      const { email, password, name, nickname, address, phoneNumber } =
+      const { email, password, name, nickname, address, phoneNumber, emailValidator } =
         req.body;
       const userData = await this.authService.signUp({
         email,
@@ -16,6 +16,7 @@ export class AuthController {
         nickname,
         address,
         phoneNumber,
+        emailValidator
       });
 
       return res
@@ -36,6 +37,7 @@ export class AuthController {
         restaurantAddress,
         restaurantType,
         restaurantPhoneNumber,
+        emailValidator
       } = req.body;
 
       const userData = await this.authService.signUpRestaurant({
@@ -46,6 +48,7 @@ export class AuthController {
         restaurantAddress,
         restaurantType,
         restaurantPhoneNumber,
+        emailValidator
       });
 
       return res
