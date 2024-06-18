@@ -17,11 +17,8 @@ export class RestaurantsService {
       restaurantPhoneNumber
     );
     return {
-      id: restaurants.id,
-      restaurantName: restaurants.restaurantName,
-      restaurantAddress: restaurants.restaurantAddress,
-      restaurantType: restaurants.restaurantType,
-      restaurantPhoneNumber: restaurants.restaurantPhoneNumber,
+      ...restaurants,
+      updatedAt: new Date(),
     };
   };
 }
