@@ -18,16 +18,17 @@ model EmailCode {
 }
 
 model Users {
-  id          Int           @id @default(autoincrement())
-  email       String        @unique
-  password    String
-  name        String
-  nickname    String        @unique
-  phoneNumber String?       @map("phone_number")
-  address     String
-  points      Int           @default(1000000)
-  createdAt   DateTime      @default(now()) @map("created_at")
-  updatedAt   DateTime      @updatedAt @map("updated_at")
+  id             Int           @id @default(autoincrement())
+  email          String        @unique
+  password       String
+  name           String
+  nickname       String        @unique
+  phoneNumber    String?       @map("phone_number")
+  address        String
+  points         Int           @default(1000000)
+  emailValidator Boolean       @map("email_Validator")
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @updatedAt @map("updated_at")
 
   notifications Notifications[]
   reviews       Reviews[]
@@ -39,16 +40,17 @@ model Users {
 }
 
 model Restaurants {
-  id                   Int          @id @default(autoincrement())
-  bossName             String       @map("boss_name")
-  bossEmail            String       @unique @map("boss_email")
-  bossPassword         String       @map("boss_password")
-  restaurantName       String       @map("restaurant_name")
-  restaurantAddress    String       @map("restaurant_address")
-  restaurantType       String       @map("restaurant_type")
+  id                    Int          @id @default(autoincrement())
+  bossName              String       @map("boss_name")
+  bossEmail             String       @unique @map("boss_email")
+  bossPassword          String       @map("boss_password")
+  restaurantName        String       @map("restaurant_name")
+  restaurantAddress     String       @map("restaurant_address")
+  restaurantType        String       @map("restaurant_type")
   restaurantPhoneNumber String       @map("restaurant_phone_number")
-  createdAt            DateTime     @default(now()) @map("created_at")
-  updatedAt            DateTime     @updatedAt @map("updated_at")
+  emailValidator        Boolean      @map("email_Validator")
+  createdAt             DateTime     @default(now()) @map("created_at")
+  updatedAt             DateTime     @updatedAt @map("updated_at")
 
   customerOrderStorage CustomerOrdersStorage[]
   notifications Notifications[]
