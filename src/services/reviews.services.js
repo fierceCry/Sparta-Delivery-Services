@@ -39,7 +39,7 @@ export class ReviewsService {
     const data = await this.reviewsRepository.readOne(user, reviewId);
 
     if (!data) {
-      throw new HttpError.NotFound('리뷰가 존재하지 않습니다.');
+      throw new HttpError.NotFound('존재하지 않는 리뷰입니다.');
     }
     return data;
   };
@@ -49,7 +49,7 @@ export class ReviewsService {
     let data = await this.reviewsRepository.readOne(user, reviewId);
 
     if (!data) {
-      throw new HttpError.NotFound('리뷰가 존재하지 않습니다.');
+      throw new HttpError.NotFound('존재하지 않는 리뷰입니다.');
     }
 
     // 리뷰 수정
@@ -68,7 +68,7 @@ export class ReviewsService {
     let data = await this.reviewsRepository.readOne(user, reviewId);
 
     if (!data) {
-      throw new HttpError.NotFound('리뷰가 존재하지 않습니다.');
+      throw new HttpError.NotFound('존재하지 않는 리뷰입니다.');
     }
 
     //리뷰 삭제

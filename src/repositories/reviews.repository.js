@@ -74,9 +74,10 @@ export class ReviewsRepository {
 
   /* 리뷰 및 평점 상세 조회 */
   readOne = async (user, reviewId) => {
-    const data = await this.prisma.reviews.findFirst({
+    let data = await this.prisma.reviews.findFirst({
       where: { id: +reviewId, userId: user.id },
       select: {
+        id: true,
         users: { select: { nickname: true } },
         restaurants: { select: { name: true } },
         rate: true,
@@ -90,6 +91,17 @@ export class ReviewsRepository {
     if (!data) {
       return null;
     }
+    data = {
+      id: data.id,
+      userNickname: data.users.nickname,
+      restaurantName: data.restaurants.name,
+      rate: data.rate,
+      content: data.content,
+      imageUrl: data.imageUrl,
+      createdAt: data.createdAt,
+      updatedAt: data.updatedAt,
+    };
+
     return data;
   };
 
