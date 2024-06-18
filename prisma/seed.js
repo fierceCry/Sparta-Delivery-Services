@@ -60,27 +60,27 @@ async function main() {
     },
   });
 
-//   const foods1 = await prisma.foods.create({
-//     data: {
-//       restaurantId: restaurant1.id,
-//       name: "양념치킨 햄버거",
-//       price: 1,
-//       imageUrl: "https://google.com",
-//     }
+  const foods1 = await prisma.foods.create({
+    data: {
+      restaurantId: restaurant1.id,
+      name: "양념치킨 햄버거",
+      price: 1,
+      imageUrl: "https://google.com",
+    }
 
-//   })
+  })
 
-//   const foods2 = await prisma.foods.create({
-//     data: {
+  const foods2 = await prisma.foods.create({
+    data: {
 
-//       restaurantId: restaurant1.id,
-//       name: "햄버거 피자",
-//       price: 2,
-//       imageUrl: "https://google.com",
-//     }
-//   })
+      restaurantId: restaurant1.id,
+      name: "햄버거 피자",
+      price: 2,
+      imageUrl: "https://google.com",
+    }
+  })
 
-//   console.log({ user1, user2, restaurant1, restaurant2, foods1, foods2 });
+  console.log({ user1, user2, restaurant1, restaurant2, foods1, foods2 });
 }
 
 main()

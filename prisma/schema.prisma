@@ -108,7 +108,6 @@ model Foods {
   updatedAt    DateTime      @updatedAt @map("updated_at")
 
   restaurants  Restaurants   @relation(fields: [restaurantId], references: [id])
-  orders       Orders[]
   customerOrderStorage CustomerOrdersStorage[]
   @@map("foods")
   @@fulltext([name])
@@ -118,7 +117,6 @@ model Orders {
   id            Int           @id @default(autoincrement())
   userId        Int           @map("user_id")
   restaurantId  Int           @map("restaurant_id")
-  foodsId       Int           @map("foods_id")
   orderPrice    Int           @map("order_price")
   state         StateEnum
   createdAt     DateTime      @default(now()) @map("created_at")
@@ -126,7 +124,6 @@ model Orders {
 
   users         Users         @relation(fields: [userId], references: [id])
   restaurant    Restaurants   @relation(fields: [restaurantId], references: [id])
-  food          Foods         @relation(fields: [foodsId], references: [id])
   customerOrderStorage CustomerOrdersStorage[]
 
   @@map("orders")
@@ -138,8 +135,9 @@ model CustomerOrdersStorage {
   userId          Int         @map("user_id")
   foodsId         Int         @map("foods_id")
   ordersId        Int         @map("orders_id")
-  orderprice      Int   
-  foodprice       Int
+  orderPrice      Int   
+  foodPrice       Int
+  quantity        Int
   createdAt       DateTime    @default(now()) @map("created_at")
   updatedAt       DateTime    @updatedAt @map("updated_at")
 
@@ -178,6 +176,7 @@ model RefreshToken {
 }
 
 enum StateEnum {
+  PENDING
   PREPARING
   DELIVERING
   DELIVERED
