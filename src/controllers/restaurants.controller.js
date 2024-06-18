@@ -1,8 +1,9 @@
-import { RestaurantsService } from '../services/restaurants.services.js';
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
 
 export class RestaurantsController {
-  restaurantsService = new RestaurantsService();
+  constructor(restaurantsService) {
+    this.restaurantsService = restaurantsService;
+  }
   getRestaurants = async (req, res) => {
     const restaurant = req.user;
 

@@ -1,6 +1,7 @@
-import { prisma } from '../utils/utils.prisma.js';
-
 export class RestaurantsRepository {
+  constructor(prisma) {
+    this.prisma = prisma;
+  }
   updateRestaurants = async (
     id,
     restaurantName,
@@ -8,7 +9,7 @@ export class RestaurantsRepository {
     restaurantType,
     restaurantPhoneNumber
   ) => {
-    const restaurants = await prisma.Restaurants.update({
+    const restaurants = await this.prisma.Restaurants.update({
       where: { id },
       data: {
         restaurantName,

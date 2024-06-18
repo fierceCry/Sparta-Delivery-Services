@@ -1,7 +1,7 @@
-import { RestaurantsRepository } from '../repositories/restaurants.repository.js';
-
 export class RestaurantsService {
-  restaurantsRepository = new RestaurantsRepository();
+  constructor(restaurantsRepository) {
+    this.restaurantsRepository = restaurantsRepository;
+  }
   updateRestaurants = async (
     id,
     restaurantName,
