@@ -2,6 +2,9 @@ import jwt from 'jsonwebtoken';
 import { prisma } from '../utils/utils.prisma.js';
 import { ENV_KEY } from '../constants/env.constants.js';
 import { HttpError } from '../errors/http.error.js';
+import { UserRepository } from '../repositories/users.repository.js';
+
+const userRepository = new UserRepository(prisma);
 
 
 const validateToken = async (token, secretKey) => {
@@ -21,7 +24,7 @@ const validateToken = async (token, secretKey) => {
 const authMiddleware = async (req, res, next) => {
   try {
     const authorizationHeader = req.headers.authorization;
-    console.log(req.headers);
+    console.log('Request Headers:', req.headers);
     if (!authorizationHeader) {
       throw new HttpError.BadRequest('인증 정보가 없습니다.');
     }

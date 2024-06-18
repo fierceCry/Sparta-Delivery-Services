@@ -4,6 +4,7 @@ import { requestLogger } from './middlewarmies/log.middleware.js';
 import { router } from './routers/index.js';
 import { globalErrorHandler } from './middlewarmies/error-handler.middleware.js';
 import { redisClient } from './utils/utils.redis.js';
+import { authMiddleware } from './middlewarmies/require-access-token.middleware.js';
 
 
 const app = express();

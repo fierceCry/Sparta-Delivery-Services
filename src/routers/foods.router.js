@@ -30,10 +30,10 @@ foodsRouter.get(
 );
 
 //혹시나 만든 메뉴 상세조회
-foodsRouter.get(
-    '/:restaurantId/foods/:foodId',
-    foodsController.readOne
-);
+// foodsRouter.get(
+//     '/:restaurantId/foods/:foodId',
+//     foodsController.readOne
+// );
 
 foodsRouter.patch(
     '/:restaurantId/foods/:foodId',

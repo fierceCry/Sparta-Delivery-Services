@@ -14,9 +14,9 @@ export class FoodsService {
     return await this.foodsRepository.findManyByRestaurant(restaurantId);
   };
 
-  getFoodById = async (restaurantId, foodId) => {
-    return await this.foodsRepository.findOne(restaurantId, foodId);
-  };
+//   getFoodById = async (restaurantId, foodId) => {
+//     return await this.foodsRepository.findOne(restaurantId, foodId);
+//   };
 
   updateFood = async (restaurantId, foodId, data) => {
     return await this.foodsRepository.update(restaurantId, foodId, data);

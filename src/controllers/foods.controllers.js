@@ -34,6 +34,7 @@ export class FoodsController {
       const foods = await this.foodService.getFoodsByRestaurant(restaurantId);
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
+        data: foods,
       });
     } catch (error) {
       next(error);
@@ -41,36 +42,27 @@ export class FoodsController {
   };
 
   // 메뉴 상세 조회
-  readOne = async (req, res, next) => {
-    try {
-      const { restaurantId, foodId } = req.params;
-      const food = await this.foodService.getFoodById(restaurantId, foodId);
-      if (!food) {
-        throw new HttpError.NotFound('없는 음식입니다.');
-      }
-      return res.status(HTTP_STATUS.OK).json({
-        status: HTTP_STATUS.OK,
-      });
-    } catch (error) {
-      next(error);
-    }
-  };
+  // readOne = async (req, res, next) => {
+  //   try {
+  //     const { restaurantId, foodId } = req.params;
+  //     const food = await this.foodService.getFoodById(restaurantId, foodId);
+  //     if (!food) {
+  //       throw new HttpError.NotFound('없는 음식입니다.');
+  //     }
+  //     return res.status(HTTP_STATUS.OK).json({
+  //       status: HTTP_STATUS.OK,
+  //     });
+  //   } catch (error) {
+  //     next(error);
+  //   }
+  // };
 
   // 메뉴 수정
   update = async (req, res, next) => {
     try {
       const { restaurantId, foodId } = req.params;
       const { name, price, imageUrl } = req.body;
-
-      const updatedFood = await this.foodService.updateFood(
-        restaurantId,
-        foodId,
-        {
-          name,
-          price,
-          imageUrl,
-        }
-      );
+      const updatedFood = await this.foodService.updateFood(parseInt(restaurantId, 10), parseInt(foodId, 10), { name, price, imageUrl });
 
       if (!updatedFood) {
         throw new HttpError.NotFound('없는 음식입니다.');
@@ -90,10 +82,8 @@ export class FoodsController {
   delete = async (req, res, next) => {
     try {
       const { restaurantId, foodId } = req.params;
-      const deletedFood = await this.foodService.deleteFood(
-        restaurantId,
-        foodId
-      );
+      const deletedFood = await this.foodService.deleteFood(parseInt(restaurantId, 10), parseInt(foodId, 10));
+
 
       if (!deletedFood) {
         throw new HttpError.NotFound('없는 음식입니다.');

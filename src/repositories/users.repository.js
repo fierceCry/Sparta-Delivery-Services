@@ -10,12 +10,12 @@ export class UserRepository {
 
   findByIdAndRole = async(userId, role)=>{
     if (role === USER_ROLES.CUSTOMER) {
-      return this.prisma.users.findUnique({
-        where: { userId },
+      return await prisma.users.findUnique({
+        where: { id: userId },
       });
     } else if (role === USER_ROLES.RESTAURANT) {
-      return this.prisma.restaurants.findUnique({
-        where: { userId },
+      return await prisma.restaurants.findUnique({
+        where: { id: userId },
       });
     }
   };
