@@ -71,4 +71,28 @@ export class AuthController {
       next(error);
     }
   };
+
+  sendVerificationEmail = async (req, res, next) => {
+    try {
+      const { email, role } = req.body;
+      await this.authService.sendVerificationEmail({email, role});
+      return res
+        .status(HTTP_STATUS.OK)
+        .json({ message: '이메일 인증번호가 성공적으로 발송되었습니다.' });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  verifyEmail = async (req, res, next) => {
+    try {
+      const { email, emailCode, role} = req.body;
+      await this.authService.verifyEmail({ email, emailCode, role });
+      return res
+        .status(HTTP_STATUS.OK)
+        .json({ message: '이메일 인증이 성공적으로 완료되었습니다.' });
+    } catch (error) {
+      next(error);
+    }
+  };
 }

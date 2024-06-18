@@ -37,7 +37,7 @@ const authMiddleware = async (req, res, next) => {
     } else if (payload === 'JsonWebTokenError') {
       throw new HttpError.Unauthorized('인증 정보가 유효하지 않습니다.');
     }
-    const user = await userRepository.findById(payload.id);
+    const user = await userRepository.findByIdAndRole(payload.id, payload.role);
     if (!user) {
       throw new HttpError.NotFound('인증 정보와 일치하는 사용자가 없습니다.');
     }

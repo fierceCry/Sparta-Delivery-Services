@@ -3,9 +3,21 @@ import { ENV_KEY } from './constants/env.constants.js';
 import { requestLogger } from './middlewarmies/log.middleware.js';
 import { router } from './routers/index.js';
 import { globalErrorHandler } from './middlewarmies/error-handler.middleware.js';
+import { redisClient } from './utils/utils.redis.js';
 
 
 const app = express();
+
+// Redis 연결 상태 확인하는 미들웨어
+app.get('/api/redis-status', (req, res) => {
+  if (redisClient.connect) {
+    console.info('Redis connected!');
+    return res.status(200).json({ message: 'Redis connected!' });
+  } else {
+    console.error('Redis connection failed');
+    return res.status(500).json({ message: 'Redis connection failed!' });
+  }
+});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
