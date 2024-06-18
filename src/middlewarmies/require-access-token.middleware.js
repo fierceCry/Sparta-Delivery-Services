@@ -23,6 +23,7 @@ const validateToken = async (token, secretKey) => {
 const authMiddleware = async (req, res, next) => {
   try {
     const authorizationHeader = req.headers.authorization;
+    console.log('Request Headers:', req.headers);
     if (!authorizationHeader) {
       throw new HttpError.BadRequest('인증 정보가 없습니다.');
     }

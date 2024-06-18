@@ -2,6 +2,7 @@ import express from 'express';
 import { authRouter } from '../routers/auth.router.js';
 import { usersRouter } from './users.router.js';
 import { restaurantsRouter } from './restaurants.router.js';
+import { foodsRouter } from './foods.router.js';
 
 const router = express.Router();
 

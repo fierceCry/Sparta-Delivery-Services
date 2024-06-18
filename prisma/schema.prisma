@@ -108,6 +108,7 @@ model Foods {
   restaurants  Restaurants   @relation(fields: [restaurantId], references: [id])
   orders       Orders[]
   customerOrderStorage CustomerOrdersStorage[]
+  @@unique([id, restaurantId])
   @@map("foods")
 }
 
