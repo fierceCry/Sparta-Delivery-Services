@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import nodeMailer from 'nodemailer';
-import { redisCli } from '../utils/utils.redis.js';
+import { redisClient, redisCli } from '../utils/utils.redis.js';
 import { HttpError } from '../errors/http.error.js';
 import { ENV_KEY } from '../constants/env.constants.js';
 import { generateRandomCode } from '../utils/utils.random.js';
@@ -23,7 +23,7 @@ export class AuthService {
     });
   }
 
-  async signUp({ email, password, name, nickname, address, phoneNumber }) {
+  async signUp({ email, password, name, nickname, address, phoneNumber,emailValidator }) {
     const user = await this.authRepository.findByEmail({ email });
     if (user) {
       throw new HttpError.Conflict('이미 가입된 사용자가 있습니다.');
@@ -44,6 +44,7 @@ export class AuthService {
       nickname,
       address,
       phoneNumber,
+      emailValidator
     });
 
     return userData;
@@ -57,6 +58,7 @@ export class AuthService {
     restaurantAddress,
     restaurantType,
     restaurantPhoneNumber,
+    emailValidator
   }) {
     const userData = await this.authRepository.findRestaurantByEmail({
       bossEmail,
@@ -76,6 +78,7 @@ export class AuthService {
       restaurantAddress,
       restaurantType,
       restaurantPhoneNumber,
+      emailValidator
     });
 
     return data;
@@ -105,13 +108,21 @@ export class AuthService {
   }
 
   generateTokens(userId, role) {
-    const accessToken = jwt.sign({ id: userId, role : role }, ENV_KEY.SECRET_KEY, {
-      expiresIn: ACCESS_TOKEN_EXPIRES_IN,
-    });
+    const accessToken = jwt.sign(
+      { id: userId, role: role },
+      ENV_KEY.SECRET_KEY,
+      {
+        expiresIn: ACCESS_TOKEN_EXPIRES_IN,
+      }
+    );
 
-    const refreshToken = jwt.sign({ id: userId, role: role }, ENV_KEY.REFRESH_SECRET_KEY, {
-      expiresIn: REFRESH_TOKEN_EXPIRES_IN,
-    });
+    const refreshToken = jwt.sign(
+      { id: userId, role: role },
+      ENV_KEY.REFRESH_SECRET_KEY,
+      {
+        expiresIn: REFRESH_TOKEN_EXPIRES_IN,
+      }
+    );
 
     return { accessToken, refreshToken };
   }
@@ -127,17 +138,8 @@ export class AuthService {
     const emailCode = generateRandomCode();
 
     const key = `${email}:${role}`;
+    await redisClient.set(key, emailCode, 'EX', '200');
 
-    try {
-      await redisCli.set(key, emailCode, 'EX', 30000);
-      console.log(`Redis에 ${key}에 ${emailCode} 저장 완료`);
-    } catch (error) {
-      throw new HttpError.InternalServerError('Redis operation failed');
-    }
-  
-    console.log(key)
-    const data = await redisCli.get(key)
-    console.log(data)
     const mailOptions = {
       to: email,
       subject: '배달 서비스 이메일 인증번호 발송',
@@ -168,12 +170,15 @@ export class AuthService {
     this.transporter.sendMail(mailOptions);
   }
 
-  verifyEmail= async({email, emailCode, role})=>{
+  verifyEmail = async ({ email, emailCode, role }) => {
     const key = `${email}:${role}`;
-    const data = await redisCli.get(key)
-    if(data !==  emailCode){
+    const data = await redisCli.get(key);
+    if (!data) {
+      throw new HttpError.BadRequest('인증코드가 만료되었습니다.');
+    }
+    if (data !== emailCode) {
       throw new HttpError.BadRequest('인증코드가 유효하지 않습니다.');
     }
-  }
-  //개발중
+    await redisCli.del(key);
+  };
 }

@@ -19,7 +19,6 @@ redisClient.connect().then(() => {
 }).catch(err => {
   console.error('Redis v4 연결에 실패했습니다.', err);
 });
-
 const redisCli = redisClient.v4;
 
 export { redisClient, redisCli };
