@@ -1,9 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { prisma } from '../utils/utils.prisma.js';
 import { ENV_KEY } from '../constants/env.constants.js';
-import {
-  HttpError
-} from '../errors/http.error.js';
+import { HttpError } from '../errors/http.error.js';
 import { UserRepository } from '../repositories/users.repository.js';
 
 const userRepository = new UserRepository(prisma);
@@ -42,7 +40,7 @@ const authMiddleware = async (req, res, next) => {
     }
     const user = await userRepository.findByIdAndRole(payload.id, payload.role);
     if (!user) {
-      throw new HttpError.NotFound( '인증 정보와 일치하는 사용자가 없습니다.');
+      throw new HttpError.NotFound('인증 정보와 일치하는 사용자가 없습니다.');
     }
     req.user = user;
     next();
