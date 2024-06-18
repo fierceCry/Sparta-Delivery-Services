@@ -26,18 +26,24 @@ const schema = Joi.object({
   phoneNumber: Joi.string().required().messages({
     'any.required': '전화번호를 입력해주세요.',
   }),
-  role: Joi.string().valid(USER_ROLES.CUSTOMER, USER_ROLES.RESTAURANT).required().messages({
-    'any.required': '역할을 입력해주세요.',
-    'any.only': '유효하지 않은 역할입니다.',
-  }),
-  emailValidator: Joi.boolean().required().custom((value, helpers) => {
-    if (value === false) {
-      return helpers.message('이메일 인증이 필요합니다.');
-    }
-    return value;
-  }).messages({
-    'any.required': '이메일인증을 확인해주세요',
-  }),
+  role: Joi.string()
+    .valid(USER_ROLES.CUSTOMER, USER_ROLES.RESTAURANT)
+    .required()
+    .messages({
+      'any.required': '역할을 입력해주세요.',
+      'any.only': '유효하지 않은 역할입니다.',
+    }),
+  emailValidator: Joi.boolean()
+    .required()
+    .custom((value, helpers) => {
+      if (value === false) {
+        return helpers.message('이메일 인증이 필요합니다.');
+      }
+      return value;
+    })
+    .messages({
+      'any.required': '이메일인증을 확인해주세요',
+    }),
 });
 
 export const signUpValidator = async (req, res, next) => {

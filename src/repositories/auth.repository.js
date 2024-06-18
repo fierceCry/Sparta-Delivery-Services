@@ -28,7 +28,7 @@ export class AuthRepository {
     nickname,
     address,
     phoneNumber,
-    emailValidator
+    emailValidator,
   }) => {
     return this.prisma.users.create({
       data: {
@@ -38,7 +38,7 @@ export class AuthRepository {
         nickname,
         address,
         phoneNumber,
-        emailValidator
+        emailValidator,
       },
     });
   };
@@ -69,7 +69,7 @@ export class AuthRepository {
     restaurantAddress,
     restaurantType,
     restaurantPhoneNumber,
-    emailValidator
+    emailValidator,
   }) => {
     return this.prisma.restaurants.create({
       data: {
@@ -80,7 +80,7 @@ export class AuthRepository {
         restaurantAddress,
         restaurantType,
         restaurantPhoneNumber,
-        emailValidator
+        emailValidator,
       },
     });
   };

@@ -62,7 +62,11 @@ export class FoodsController {
     try {
       const { restaurantId, foodId } = req.params;
       const { name, price, imageUrl } = req.body;
-      const updatedFood = await this.foodService.updateFood(parseInt(restaurantId, 10), parseInt(foodId, 10), { name, price, imageUrl });
+      const updatedFood = await this.foodService.updateFood(
+        parseInt(restaurantId, 10),
+        parseInt(foodId, 10),
+        { name, price, imageUrl }
+      );
 
       if (!updatedFood) {
         throw new HttpError.NotFound('없는 음식입니다.');
@@ -82,8 +86,10 @@ export class FoodsController {
   delete = async (req, res, next) => {
     try {
       const { restaurantId, foodId } = req.params;
-      const deletedFood = await this.foodService.deleteFood(parseInt(restaurantId, 10), parseInt(foodId, 10));
-
+      const deletedFood = await this.foodService.deleteFood(
+        parseInt(restaurantId, 10),
+        parseInt(foodId, 10)
+      );
 
       if (!deletedFood) {
         throw new HttpError.NotFound('없는 음식입니다.');

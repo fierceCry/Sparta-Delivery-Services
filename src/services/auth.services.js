@@ -23,7 +23,15 @@ export class AuthService {
     });
   }
 
-  async signUp({ email, password, name, nickname, address, phoneNumber,emailValidator }) {
+  async signUp({
+    email,
+    password,
+    name,
+    nickname,
+    address,
+    phoneNumber,
+    emailValidator,
+  }) {
     const user = await this.authRepository.findByEmail({ email });
     if (user) {
       throw new HttpError.Conflict('이미 가입된 사용자가 있습니다.');
@@ -44,7 +52,7 @@ export class AuthService {
       nickname,
       address,
       phoneNumber,
-      emailValidator
+      emailValidator,
     });
 
     return userData;
@@ -58,7 +66,7 @@ export class AuthService {
     restaurantAddress,
     restaurantType,
     restaurantPhoneNumber,
-    emailValidator
+    emailValidator,
   }) {
     const userData = await this.authRepository.findRestaurantByEmail({
       bossEmail,
@@ -78,7 +86,7 @@ export class AuthService {
       restaurantAddress,
       restaurantType,
       restaurantPhoneNumber,
-      emailValidator
+      emailValidator,
     });
 
     return data;

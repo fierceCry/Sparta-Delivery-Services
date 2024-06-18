@@ -19,15 +19,12 @@ const foodsService = new FoodsService(foodsRepository);
 const foodsController = new FoodsController(foodsService);
 
 foodsRouter.post(
-    '/:restaurantId/foods',
-    authMiddleware,
-    foodsController.create
+  '/:restaurantId/foods',
+  authMiddleware,
+  foodsController.create
 );
 
-foodsRouter.get(
-    '/:restaurantId/foods',
-    foodsController.readMany
-);
+foodsRouter.get('/:restaurantId/foods', foodsController.readMany);
 
 //혹시나 만든 메뉴 상세조회
 // foodsRouter.get(
@@ -36,16 +33,16 @@ foodsRouter.get(
 // );
 
 foodsRouter.patch(
-    '/:restaurantId/foods/:foodId',
-    authMiddleware,
-    postFoodValidator,
-    foodsController.update
+  '/:restaurantId/foods/:foodId',
+  authMiddleware,
+  postFoodValidator,
+  foodsController.update
 );
 
 foodsRouter.delete(
-    '/:restaurantId/foods/:foodId',
-    authMiddleware,
-    foodsController.delete
+  '/:restaurantId/foods/:foodId',
+  authMiddleware,
+  foodsController.delete
 );
 
 export { foodsRouter };

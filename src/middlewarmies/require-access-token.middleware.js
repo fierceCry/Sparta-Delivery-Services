@@ -6,7 +6,6 @@ import { UserRepository } from '../repositories/users.repository.js';
 
 const userRepository = new UserRepository(prisma);
 
-
 const validateToken = async (token, secretKey) => {
   try {
     const payload = jwt.verify(token, secretKey);
