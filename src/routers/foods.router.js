@@ -6,12 +6,6 @@ import { prisma } from '../utils/utils.prisma.js';
 import { postFoodValidator } from '../middlewarmies/validation/postFood.validator.js';
 import { authMiddleware } from '../middlewarmies/require-access-token.middleware.js';
 
-// 테스트
-// const testMiddleware = (req, res, next) => {
-//     req.user = { id: 1 }; // 테스트용 ID 설정
-//     next();
-// };
-
 const foodsRouter = express();
 
 const foodsRepository = new FoodsRepository(prisma);
@@ -25,12 +19,6 @@ foodsRouter.post(
 );
 
 foodsRouter.get('/:restaurantId/foods', foodsController.readMany);
-
-//혹시나 만든 메뉴 상세조회
-// foodsRouter.get(
-//     '/:restaurantId/foods/:foodId',
-//     foodsController.readOne
-// );
 
 foodsRouter.patch(
   '/:restaurantId/foods/:foodId',

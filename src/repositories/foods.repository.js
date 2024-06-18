@@ -18,17 +18,6 @@ export class FoodsRepository {
     });
   };
 
-  //   findOne = async (restaurantId, foodId) => {
-  //     return await this.prisma.foods.findUnique({
-  //       where: {
-  //         id_restaurantId: {
-  //           id: foodId,
-  //           restaurantId,
-  //         },
-  //       },
-  //     });
-  //   };
-
   update = async (restaurantId, id, data) => {
     // 레코드가 존재하는지 확인
     const food = await this.prisma.foods.findUnique({

@@ -41,21 +41,6 @@ export class FoodsController {
     }
   };
 
-  // 메뉴 상세 조회
-  // readOne = async (req, res, next) => {
-  //   try {
-  //     const { restaurantId, foodId } = req.params;
-  //     const food = await this.foodService.getFoodById(restaurantId, foodId);
-  //     if (!food) {
-  //       throw new HttpError.NotFound('없는 음식입니다.');
-  //     }
-  //     return res.status(HTTP_STATUS.OK).json({
-  //       status: HTTP_STATUS.OK,
-  //     });
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // };
 
   // 메뉴 수정
   update = async (req, res, next) => {
