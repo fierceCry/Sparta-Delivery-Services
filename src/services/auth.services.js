@@ -54,9 +54,6 @@ export class AuthService {
       phoneNumber,
       emailValidator,
     });
-    if (process.env.NODE_ENV !== 'test') {
-      await this.authService.sendVerificationEmail({ email });
-    }
 
     return userData;
   }

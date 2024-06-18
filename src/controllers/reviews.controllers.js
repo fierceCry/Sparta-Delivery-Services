@@ -1,4 +1,5 @@
 import { getStarRating } from '../constants/review.constants.js';
+import { HTTP_STATUS } from '../constants/http-status.constant.js';
 export class ReviewsController {
   constructor(reviewsService) {
     this.reviewsService = reviewsService;
@@ -21,8 +22,8 @@ export class ReviewsController {
         imageUrl
       );
 
-      return res.status(201).json({
-        status: 201,
+      return res.status(HTTP_STATUS.CREATED).json({
+        status: HTTP_STATUS.CREATED,
         message: '리뷰가 성공적으로 생성되었습니다.',
         data,
       });
@@ -39,7 +40,7 @@ export class ReviewsController {
 
       const data = await this.reviewsService.readMany(user, sort || 'desc');
 
-      res.status(200).json({ status: 200, data });
+      res.status(HTTP_STATUS.OK).json({ status: HTTP_STATUS.OK, data });
     } catch (error) {
       next(error);
     }
@@ -54,7 +55,7 @@ export class ReviewsController {
       //리뷰 조회
       const data = await this.reviewsService.readOne(user, reviewId);
 
-      res.status(200).json({ status: 200, data });
+      res.status(HTTP_STATUS.OK).json({ status: HTTP_STATUS.OK, data });
     } catch (error) {
       next(error);
     }
@@ -78,8 +79,8 @@ export class ReviewsController {
         imageUrl
       );
 
-      res.status(200).json({
-        status: 200,
+      res.status(HTTP_STATUS.OK).json({
+        status: HTTP_STATUS.OK,
         message: '리뷰가 성공적으로 수정되었습니다.',
         data,
       });
@@ -96,8 +97,8 @@ export class ReviewsController {
 
       const data = await this.reviewsService.delete(user, reviewId);
 
-      res.status(200).json({
-        status: 200,
+      res.status(HTTP_STATUS.OK).json({
+        status: HTTP_STATUS.OK,
         message: '리뷰가 성공적으로 삭제되었습니다.',
         data,
       });

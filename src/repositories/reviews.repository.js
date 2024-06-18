@@ -11,8 +11,6 @@ export class ReviewsRepository {
       include: { users: true, restaurants: true },
     });
 
-    //console.log(`found ${order}`);
-
     // 주문이 존재하지 않거나, 주문이 사용자와 관계없을 때
     if (!order || order.userId !== userId) {
       return null;

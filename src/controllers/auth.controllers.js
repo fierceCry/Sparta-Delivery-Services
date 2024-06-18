@@ -26,10 +26,6 @@ export class AuthController {
         emailValidator,
       });
 
-      if (process.env.NODE_ENV !== 'test') {
-        await this.authService.sendVerificationEmail({ email });
-      }
-
       return res
         .status(HTTP_STATUS.OK)
         .json({ message: '고객 회원가입이 완료되었습니다.', data: userData });
