@@ -64,7 +64,7 @@ reviewRouter.get('/reviews', async (req, res, next) => {
       where: { userId: user.id },
       orderBy: { createdAt: sortOrder },
       select: {
-        user: { select: { nickname: true } },
+        users: { select: { nickname: true } },
         restaurants: { select: { name: true } },
         rate: true,
         content: true,
@@ -94,6 +94,30 @@ reviewRouter.get('/reviews', async (req, res, next) => {
 /* 리뷰 및 평점 상세 조회 */
 reviewRouter.get('/reviews/:reviewId', async (req, res, next) => {
   try {
+    const user = req.user;
+    const { reviewId } = req.params;
+
+    //리뷰 조회
+    const data = await prisma.reviews.findFirst({
+      where: { id: +reviewId, userId: user.id },
+      select: {
+        users: { select: { nickname: true } },
+        restaurants: { select: { name: true } },
+        rate: true,
+        content: true,
+        imageUrl: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    if (!data) {
+      return res
+        .status(404)
+        .json({ status: 404, message: '리뷰가 존재하지 않습니다.' });
+    }
+
+    res.status(200).json({ status: 200, data });
   } catch (error) {
     next(error);
   }
