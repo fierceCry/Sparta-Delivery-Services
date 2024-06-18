@@ -18,16 +18,17 @@ model EmailCode {
 }
 
 model Users {
-  id          Int      @id @default(autoincrement())
-  email       String   @unique
-  password    String
-  name        String
-  nickname    String   @unique
-  phoneNumber String?  @map("phone_number")
-  address     String
-  points      Int      @default(1000000)
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  id             Int      @id @default(autoincrement())
+  email          String   @unique
+  password       String
+  name           String
+  nickname       String   @unique
+  phoneNumber    String?  @map("phone_number")
+  address        String
+  points         Int      @default(1000000)
+  emailValidator Boolean  @map("email_Validator")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
 
   notifications        Notifications[]
   reviews              Reviews[]
@@ -47,6 +48,7 @@ model Restaurants {
   restaurantAddress     String   @map("restaurant_address")
   restaurantType        String   @map("restaurant_type")
   restaurantPhoneNumber String   @map("restaurant_phone_number")
+  emailValidator        Boolean  @map("email_Validator")
   createdAt             DateTime @default(now()) @map("created_at")
   updatedAt             DateTime @updatedAt @map("updated_at")
 
@@ -108,6 +110,7 @@ model Foods {
   orders               Orders[]
   customerOrderStorage CustomerOrdersStorage[]
 
+  @@unique([id, restaurantId])
   @@map("foods")
 }
 

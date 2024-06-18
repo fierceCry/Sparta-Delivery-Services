@@ -5,11 +5,17 @@ export class AuthController {
     this.authService = authService;
   }
 
-  //  6월 17일에 동작을 해야하므로 이메일인증기능을 추가하지않지만 추후에 바로 이메일인증 기능 추가해야함
   signUp = async (req, res, next) => {
     try {
-      const { email, password, name, nickname, address, phoneNumber } =
-        req.body;
+      const {
+        email,
+        password,
+        name,
+        nickname,
+        address,
+        phoneNumber,
+        emailValidator,
+      } = req.body;
       const userData = await this.authService.signUp({
         email,
         password,
@@ -17,6 +23,7 @@ export class AuthController {
         nickname,
         address,
         phoneNumber,
+        emailValidator,
       });
 
       return res
@@ -37,6 +44,7 @@ export class AuthController {
         restaurantAddress,
         restaurantType,
         restaurantPhoneNumber,
+        emailValidator,
       } = req.body;
 
       const userData = await this.authService.signUpRestaurant({
@@ -47,6 +55,7 @@ export class AuthController {
         restaurantAddress,
         restaurantType,
         restaurantPhoneNumber,
+        emailValidator,
       });
 
       return res
@@ -68,6 +77,30 @@ export class AuthController {
       return res
         .status(HTTP_STATUS.OK)
         .json({ message: '로그인이 성공하였습니다.', data: token });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  sendVerificationEmail = async (req, res, next) => {
+    try {
+      const { email, role } = req.body;
+      await this.authService.sendVerificationEmail({ email, role });
+      return res
+        .status(HTTP_STATUS.OK)
+        .json({ message: '이메일 인증번호가 성공적으로 발송되었습니다.' });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  verifyEmail = async (req, res, next) => {
+    try {
+      const { email, emailCode, role } = req.body;
+      await this.authService.verifyEmail({ email, emailCode, role });
+      return res
+        .status(HTTP_STATUS.OK)
+        .json({ message: '이메일 인증이 성공적으로 완료되었습니다.' });
     } catch (error) {
       next(error);
     }

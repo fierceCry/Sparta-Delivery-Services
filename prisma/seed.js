@@ -16,6 +16,7 @@ async function main() {
       nickname: 'AliceNickname',
       phoneNumber: '010-1111-2222',
       address: 'Seoul, South Korea',
+      emailValidator: true,
     },
   });
 
@@ -29,6 +30,7 @@ async function main() {
       nickname: 'BobNickname',
       phoneNumber: '010-3333-4444',
       address: 'Busan, South Korea',
+      emailValidator: true,
     },
   });
 
@@ -43,6 +45,7 @@ async function main() {
       restaurantAddress: 'Seoul, South Korea',
       restaurantType: 'Korean',
       restaurantPhoneNumber: '010-5555-6666',
+      emailValidator: true,
     },
   });
 
@@ -57,6 +60,7 @@ async function main() {
       restaurantAddress: 'Busan, South Korea',
       restaurantType: 'Japanese',
       restaurantPhoneNumber: '010-7777-8888',
+      emailValidator: true,
     },
   });
 
