@@ -5,4 +5,4 @@ export const USER_ROLES = {
   CUSTOMER: '고객',
   RESTAURANT: '업장'
 };
-export const MIN_PASSWORD_LENGTH =6
+export const MIN_PASSWORD_LENGTH = 6;

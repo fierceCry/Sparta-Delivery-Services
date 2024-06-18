@@ -41,7 +41,7 @@ const refreshTokenMiddleware = async (req, res, next) => {
       throw new HttpError.BadRequest('폐기 된 인증 정보입니다.');
     }
 
-    const user = await userRepository.findById(payload.id)
+    const user = await userRepository.findByIdAndRole(payload.id, payload.role)
     if (!user) {
       throw new HttpError.NotFound(MESSAGES.AUTH.COMMON.JWT.NO_USER);
     }
