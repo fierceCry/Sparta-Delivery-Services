@@ -1,11 +1,12 @@
 import { Router } from 'express';
 import { prisma } from '../utils/utils.prisma.js';
 import { createReiveValidator } from '../middlewarmies/validation/create-review-validator.middleware.js';
+import { updateReiveValidator } from '../middlewarmies/validation/update-review-validator.middleware.js';
 
 const reviewRouter = Router();
 /* 리뷰 및 평점 생성 */
 reviewRouter.post(
-  'orders/:customerordersstorageId/reviews',
+  '/orders/:customerordersstorageId/reviews',
   createReiveValidator,
   async (req, res, next) => {
     try {
@@ -76,7 +77,7 @@ reviewRouter.get('/reviews', async (req, res, next) => {
 
     //출력 내용
     const data = reviews.map((review) => ({
-      userNickname: review.users.Nickname,
+      userNickname: review.users.nickname,
       restaurantName: review.restaurants.name,
       rate: review.rate,
       content: review.content,
@@ -124,12 +125,46 @@ reviewRouter.get('/reviews/:reviewId', async (req, res, next) => {
 });
 
 /* 리뷰 및 평점 수정 */
-reviewRouter.patch('/reviews/:reviewId', async (req, res, next) => {
-  try {
-  } catch (error) {
-    next(error);
+reviewRouter.patch(
+  '/reviews/:reviewId',
+  updateReiveValidator,
+  async (req, res, next) => {
+    try {
+      const user = req.user;
+      const { reviewId } = req.params;
+      const { rate, content, imageUrl } = req.body;
+
+      //리뷰 조회
+      let data = await prisma.reviews.findFirst({
+        where: { id: +reviewId, userId: user.id },
+      });
+
+      if (!data) {
+        return res
+          .status(404)
+          .json({ status: 404, message: '리뷰가 존재하지 않습니다.' });
+      }
+
+      // 리뷰 수정
+      data = await prisma.reviews.update({
+        where: { id: +reviewId },
+        data: {
+          ...(rate && { rate }),
+          ...(content && { content }),
+          ...(imageUrl && { imageUrl }),
+        },
+      });
+
+      res.status(200).json({
+        status: 200,
+        message: '리뷰가 성공적으로 수정되었습니다.',
+        data,
+      });
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 /* 리뷰 및 평점 목록 삭제 */
 reviewRouter.delete('/reviews/:reviewId', async (req, res, next) => {
