@@ -8,169 +8,173 @@ datasource db {
 }
 
 model EmailCode {
-  id        Int             @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   email     String
-  emailCode String          @map("email_code")
-  createdAt DateTime        @default(now()) @map("created_at")
-  updatedAt DateTime        @updatedAt @map("updated_at")
+  emailCode String   @map("email_code")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("email_code")
 }
 
 model Users {
-  id             Int           @id @default(autoincrement())
-  email          String        @unique
+  id             Int      @id @default(autoincrement())
+  email          String   @unique
   password       String
   name           String
-  nickname       String        @unique
-  phoneNumber    String?       @map("phone_number")
+  nickname       String   @unique
+  phoneNumber    String?  @map("phone_number")
   address        String
-  points         Int           @default(1000000)
-  emailValidator Boolean       @map("email_Validator")
-  createdAt      DateTime      @default(now()) @map("created_at")
-  updatedAt      DateTime      @updatedAt @map("updated_at")
+  points         Int      @default(1000000)
+  emailValidator Boolean  @map("email_Validator")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
 
-  notifications Notifications[]
-  reviews       Reviews[]
-  orders Orders[]
+  notifications        Notifications[]
+  reviews              Reviews[]
+  orders               Orders[]
   customerOrderStorage CustomerOrdersStorage[]
-  refreshToken   RefreshToken? @relation("UserRefreshToken")
+  refreshToken         RefreshToken?           @relation("UserRefreshToken")
 
   @@map("users")
 }
 
 model Restaurants {
-  id                    Int          @id @default(autoincrement())
-  bossName              String       @map("boss_name")
-  bossEmail             String       @unique @map("boss_email")
-  bossPassword          String       @map("boss_password")
-  restaurantName        String       @map("restaurant_name")
-  restaurantAddress     String       @map("restaurant_address")
-  restaurantType        String       @map("restaurant_type")
-  restaurantPhoneNumber String       @map("restaurant_phone_number")
-  emailValidator        Boolean      @map("email_Validator")
-  createdAt             DateTime     @default(now()) @map("created_at")
-  updatedAt             DateTime     @updatedAt @map("updated_at")
+  id                    Int      @id @default(autoincrement())
+  bossName              String   @map("boss_name")
+  bossEmail             String   @unique @map("boss_email")
+  bossPassword          String   @map("boss_password")
+  restaurantName        String   @map("restaurant_name")
+  restaurantAddress     String   @map("restaurant_address")
+  restaurantType        String   @map("restaurant_type")
+  restaurantPhoneNumber String   @map("restaurant_phone_number")
+  emailValidator        Boolean  @map("email_Validator")
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @updatedAt @map("updated_at")
 
   customerOrderStorage CustomerOrdersStorage[]
-  notifications Notifications[]
-  reviews       Reviews[]
-  foods         Foods[]
-  orders Orders[]
-  reviewsComments ReviewsComments[]
+  notifications        Notifications[]
+  reviews              Reviews[]
+  foods                Foods[]
+  orders               Orders[]
+  reviewsComments      ReviewsComments[]
+
   @@map("restaurants")
 }
 
 model Notifications {
-  id                        Int        @id @default(autoincrement())
-  userId                    Int        @map("user_id")
-  restaurantId              Int        @map("restaurant_id")
-  customerordersstorageId   Int        @map("customerordersstorage_Id")
-  message                   String
-  createdAt                 DateTime   @default(now()) @map("created_at")
-  updatedAt                 DateTime   @updatedAt @map("updated_at")
+  id                      Int      @id @default(autoincrement())
+  userId                  Int      @map("user_id")
+  restaurantId            Int      @map("restaurant_id")
+  customerordersstorageId Int      @map("customerordersstorage_Id")
+  message                 String
+  createdAt               DateTime @default(now()) @map("created_at")
+  updatedAt               DateTime @updatedAt @map("updated_at")
 
-  user        Users                    @relation(fields: [userId], references: [id])
-  restaurants Restaurants              @relation(fields: [restaurantId], references: [id])
-  orders      CustomerOrdersStorage    @relation(fields: [customerordersstorageId], references: [id])
-  
+  user        Users                 @relation(fields: [userId], references: [id])
+  restaurants Restaurants           @relation(fields: [restaurantId], references: [id])
+  orders      CustomerOrdersStorage @relation(fields: [customerordersstorageId], references: [id])
+
   @@map("notifications")
 }
 
 model Reviews {
-  id                           Int       @id @default(autoincrement())
-  userId                       Int       @map("user_id")
-  restaurantId                 Int       @map("restaurant_id")
-  customerordersstorageId      Int       @map("customerordersstorage_Id")
-  rate                         Rating
-  content                      String
-  imageUrl                     Json      @map("image_url") 
-  createdAt                    DateTime  @default(now()) @map("created_at")
-  updatedAt                    DateTime  @updatedAt @map("updated_at")
+  id                      Int      @id @default(autoincrement())
+  userId                  Int      @map("user_id")
+  restaurantId            Int      @map("restaurant_id")
+  customerordersstorageId Int      @map("customerordersstorage_Id")
+  rate                    Rating
+  content                 String
+  imageUrl                Json     @map("image_url")
+  createdAt               DateTime @default(now()) @map("created_at")
+  updatedAt               DateTime @updatedAt @map("updated_at")
 
-  users        Users                     @relation(fields: [userId], references: [id])
-  restaurants  Restaurants                @relation(fields: [restaurantId], references: [id])
-  orders       CustomerOrdersStorage      @relation(fields: [customerordersstorageId], references: [id])
-  comments     ReviewsComments[]
+  users       Users                 @relation(fields: [userId], references: [id])
+  restaurants Restaurants           @relation(fields: [restaurantId], references: [id])
+  orders      CustomerOrdersStorage @relation(fields: [customerordersstorageId], references: [id])
+  comments    ReviewsComments[]
 
   @@map("reviews")
 }
 
 model Foods {
-  id           Int           @id @default(autoincrement())
-  restaurantId Int           @map("restaurant_id")
+  id           Int      @id @default(autoincrement())
+  restaurantId Int      @map("restaurant_id")
   name         String
   price        Int
-  imageUrl     Json          @map("image_url") 
-  createdAt    DateTime      @default(now()) @map("created_at")
-  updatedAt    DateTime      @updatedAt @map("updated_at")
+  imageUrl     Json     @map("image_url")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
 
-  restaurants  Restaurants   @relation(fields: [restaurantId], references: [id])
-  orders       Orders[]
+  restaurants          Restaurants             @relation(fields: [restaurantId], references: [id])
+  orders               Orders[]
   customerOrderStorage CustomerOrdersStorage[]
+
   @@unique([id, restaurantId])
   @@map("foods")
 }
 
 model Orders {
-  id            Int           @id @default(autoincrement())
-  userId        Int           @map("user_id")
-  restaurantId  Int           @map("restaurant_id")
-  foodsId       Int           @map("foods_id")
-  orderPrice    Int           @map("order_price")
-  state         StateEnum
-  createdAt     DateTime      @default(now()) @map("created_at")
-  updatedAt     DateTime      @updatedAt @map("updated_at")
+  id           Int       @id @default(autoincrement())
+  userId       Int       @map("user_id")
+  restaurantId Int       @map("restaurant_id")
+  foodsId      Int       @map("foods_id")
+  orderPrice   Int       @map("order_price")
+  state        StateEnum
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
 
-  users         Users         @relation(fields: [userId], references: [id])
-  restaurant    Restaurants   @relation(fields: [restaurantId], references: [id])
-  food          Foods         @relation(fields: [foodsId], references: [id])
+  users                Users                   @relation(fields: [userId], references: [id])
+  restaurant           Restaurants             @relation(fields: [restaurantId], references: [id])
+  food                 Foods                   @relation(fields: [foodsId], references: [id])
   customerOrderStorage CustomerOrdersStorage[]
 
   @@map("orders")
 }
 
 model CustomerOrdersStorage {
-  id              Int         @id @default(autoincrement())
-  restaurantsId   Int         @map("restaurants_id")
-  userId          Int         @map("user_id")
-  foodsId         Int         @map("foods_id")
-  ordersId        Int         @map("orders_id")
-  orderprice      Int   
-  foodprice       Int
-  createdAt       DateTime    @default(now()) @map("created_at")
-  updatedAt       DateTime    @updatedAt @map("updated_at")
+  id            Int      @id @default(autoincrement())
+  restaurantsId Int      @map("restaurants_id")
+  userId        Int      @map("user_id")
+  foodsId       Int      @map("foods_id")
+  ordersId      Int      @map("orders_id")
+  orderprice    Int
+  foodprice     Int
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
 
-  reviews       Reviews[]
-  notification  Notifications[]
-  order         Orders            @relation(fields: [ordersId], references: [id])
-  food          Foods             @relation(fields: [foodsId], references: [id])
-  users         Users            @relation(fields: [userId], references: [id])
-  restaurants   Restaurants     @relation(fields: [restaurantsId], references: [id])
+  reviews      Reviews[]
+  notification Notifications[]
+  order        Orders          @relation(fields: [ordersId], references: [id])
+  food         Foods           @relation(fields: [foodsId], references: [id])
+  users        Users           @relation(fields: [userId], references: [id])
+  restaurants  Restaurants     @relation(fields: [restaurantsId], references: [id])
+
   @@map("customer_orders_storage")
 }
 
-model ReviewsComments{
-  id              Int         @id @default(autoincrement())
-  reviewId        Int         @map("review_id")
-  restaurantsId   Int         @map("restaurants_id")
-  content         String     
-  createdAt       DateTime    @default(now()) @map("created_at")
-  updatedAt       DateTime    @updatedAt @map("updated_at")
+model ReviewsComments {
+  id            Int      @id @default(autoincrement())
+  reviewId      Int      @map("review_id")
+  restaurantsId Int      @map("restaurants_id")
+  content       String
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
 
-  review          Reviews     @relation(fields: [reviewId], references: [id])
-  restaurants Restaurants     @relation(fields: [restaurantsId], references: [id])
+  review      Reviews     @relation(fields: [reviewId], references: [id])
+  restaurants Restaurants @relation(fields: [restaurantsId], references: [id])
+
   @@map("reviews_comments")
 }
 
 model RefreshToken {
   id           Int      @id @default(autoincrement())
-  refreshToken String   @map("refresh_token") 
+  refreshToken String   @map("refresh_token")
   userId       Int      @unique @map("user_id")
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 
-  user         Users     @relation("UserRefreshToken", fields: [userId], references: [id])
+  user Users @relation("UserRefreshToken", fields: [userId], references: [id])
 
   @@map("refresh_token")
 }
