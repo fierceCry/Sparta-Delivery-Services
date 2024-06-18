@@ -4,56 +4,95 @@ import { createReiveValidator } from '../middlewarmies/validation/create-review-
 
 const reviewRouter = Router();
 /* 리뷰 및 평점 생성 */
-reviewRouter.post('/', createReiveValidator, async (req, res, next) => {
+reviewRouter.post(
+  'orders/:customerordersstorageId/reviews',
+  createReiveValidator,
+  async (req, res, next) => {
+    try {
+      const user = req.user;
+      const { customerordersstorageId } = req.params;
+      const { rate, content, imageUrl } = req.body;
+
+      //customerordersstorageId 이용하여 테이블에서 주문 찾기
+      const customerOder = await prisma.customer_orders_storage.findUnique({
+        where: { id: +customerordersstorageId },
+        include: { users: true, restaurants: true },
+      });
+
+      // 주문이 존재하지 않거나, 주문이 사용자와 관계없을 때
+      if (!customerOder || customerOder.userId !== user.id) {
+        return res
+          .status(400)
+          .json({ message: '유효하지 않은 주문 정보입니다.' });
+      }
+
+      //리뷰 생성
+      const data = await prisma.reviews.create({
+        data: {
+          id,
+          userId: user.id,
+          restaurantId: customerOder.restaurantId,
+          customerordersstorageId: customerOder.id,
+          rate,
+          content,
+          imageUrl,
+        },
+      });
+
+      return res.status(201).json({
+        status: 201,
+        message: '리뷰가 성공적으로 생성되었습니다.',
+        data,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+/* 리뷰 및 평점 목록 조회 */
+reviewRouter.get('/reviews', async (req, res, next) => {
   try {
     const user = req.user;
-    const { customerordersstorageId } = req.params;
-    const { rate, content, imageUrl } = req.body;
 
-    const customerOder = await prisma.customer_orders_storage.findUnique({
-      where: { id: +customerordersstorageId },
-      include: { users: true, restaurants: true },
-    });
+    //리뷰 목록 정렬
+    const { sort = 'desc' } = req.query;
+    const sortOrder = sort.toLowerCase() === 'asc' ? 'asc' : 'desc';
 
-    if (!customerOder || customerOder.userId !== user.id) {
-      return res
-        .status(400)
-        .json({ message: '유효하지 않은 주문 정보입니다.' });
-    }
-
-    //리뷰 생성
-    const data = await prisma.reviews.create({
-      data: {
-        id,
-        userId: user.id,
-        restaurantId: customerOder.restaurantId,
-        customerordersstorageId: customerOder.id,
-        rate,
-        content,
-        imageUrl,
+    //리뷰 목록 조회
+    const reviews = await prisma.reviews.findMany({
+      where: { userId: user.id },
+      orderBy: { createdAt: sortOrder },
+      select: {
+        user: { select: { nickname: true } },
+        restaurants: { select: { name: true } },
+        rate: true,
+        content: true,
+        imageUrl: true,
+        createdAt: true,
+        updatedAt: true,
       },
     });
 
-    return res.status(201).json({
-      status: 201,
-      message: '리뷰가 성공적으로 생성되었습니다.',
-      data,
-    });
-  } catch (error) {
-    next(error);
-  }
-});
+    //출력 내용
+    const data = reviews.map((review) => ({
+      userNickname: review.users.Nickname,
+      restaurantName: review.restaurants.name,
+      rate: review.rate,
+      content: review.content,
+      imageUrl: review.imageUrl,
+      createdAt: review.createdAt,
+      updatedAt: review.updatedAt,
+    }));
 
-/* 리뷰 및 평점 목록 조회 */
-reviewRouter.get('/', async (req, res, next) => {
-  try {
+    res.status(200).json({ status: 200, data });
   } catch (error) {
     next(error);
   }
 });
 
 /* 리뷰 및 평점 상세 조회 */
-reviewRouter.get('/:reviewId', async (req, res, next) => {
+reviewRouter.get('/reviews/:reviewId', async (req, res, next) => {
   try {
   } catch (error) {
     next(error);
@@ -61,7 +100,7 @@ reviewRouter.get('/:reviewId', async (req, res, next) => {
 });
 
 /* 리뷰 및 평점 수정 */
-reviewRouter.patch('/:reviewId', async (req, res, next) => {
+reviewRouter.patch('/reviews/:reviewId', async (req, res, next) => {
   try {
   } catch (error) {
     next(error);
@@ -69,7 +108,7 @@ reviewRouter.patch('/:reviewId', async (req, res, next) => {
 });
 
 /* 리뷰 및 평점 목록 삭제 */
-reviewRouter.delete('/:reviewId', async (req, res, next) => {
+reviewRouter.delete('/reviews/:reviewId', async (req, res, next) => {
   try {
   } catch (error) {
     next(error);

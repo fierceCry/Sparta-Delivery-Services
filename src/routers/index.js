@@ -5,5 +5,5 @@ import { reviewRouter } from '../routers/reviews.router.js';
 const router = express.Router();
 
 router.use('/auth', authRouter);
-router.use('orders/:customerordersstorageId/reviews', reviewRouter);
+router.use('/', reviewRouter);
 export { router };
