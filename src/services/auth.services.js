@@ -26,7 +26,9 @@ export class AuthService {
       throw new HttpError.Conflict('이미 가입된 사용자가 있습니다.');
     }
 
-    const existingNickname = await this.authRepository.findByNickname({nickname});
+    const existingNickname = await this.authRepository.findByNickname({
+      nickname,
+    });
     if (existingNickname) {
       throw new HttpError.Conflict('이미 사용 중인 닉네임입니다.');
     }
@@ -90,7 +92,7 @@ export class AuthService {
     }
 
     const accessToken = this.generateTokens(user.id);
-    await this.authRepository.token(user.id, accessToken.refreshToken)
+    await this.authRepository.token(user.id, accessToken.refreshToken);
 
     return accessToken;
   };

@@ -6,10 +6,13 @@ const schema = Joi.object({
     'any.required': '이메일을 입력해주세요.',
     'string.email': '유효한 이메일 형식이 아닙니다.',
   }),
-  password: Joi.string().required().min(MIN_PASSWORD_LENGTH).messages({
-    'any.required': '비밀번호를 입력해주세요.',
-    'string.min': `비밀번호는 최소 ${MIN_PASSWORD_LENGTH}자 이상이어야 합니다.`,
-  }),
+  password: Joi.string()
+    .required()
+    .min(MIN_PASSWORD_LENGTH)
+    .messages({
+      'any.required': '비밀번호를 입력해주세요.',
+      'string.min': `비밀번호는 최소 ${MIN_PASSWORD_LENGTH}자 이상이어야 합니다.`,
+    }),
   name: Joi.string().required().messages({
     'any.required': '이름을 입력해주세요.',
   }),

@@ -5,7 +5,6 @@ export class AuthController {
     this.authService = authService;
   }
 
-  //  6월 17일에 동작을 해야하므로 이메일인증기능을 추가하지않지만 추후에 바로 이메일인증 기능 추가해야함
   signUp = async (req, res, next) => {
     try {
       const { email, password, name, nickname, address, phoneNumber } =
