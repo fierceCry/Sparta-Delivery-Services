@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
 datasource db {
@@ -7,7 +8,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model EmailCode {
+model EmailCode {npm
   id        Int             @id @default(autoincrement())
   email     String
   emailCode String          @map("email_code")
@@ -57,6 +58,9 @@ model Restaurants {
   orders Orders[]
   reviewsComments ReviewsComments[]
   @@map("restaurants")
+  @@fulltext([restaurantName])
+  @@fulltext([restaurantAddress])
+  @@fulltext([restaurantType])
 }
 
 model Notifications {
@@ -99,7 +103,7 @@ model Foods {
   restaurantId Int           @map("restaurant_id")
   name         String
   price        Int
-  imageUrl     Json          @map("image_url") 
+  imageUrl     String          @map("image_url") 
   createdAt    DateTime      @default(now()) @map("created_at")
   updatedAt    DateTime      @updatedAt @map("updated_at")
 
@@ -107,6 +111,7 @@ model Foods {
   orders       Orders[]
   customerOrderStorage CustomerOrdersStorage[]
   @@map("foods")
+  @@fulltext([name])
 }
 
 model Orders {
