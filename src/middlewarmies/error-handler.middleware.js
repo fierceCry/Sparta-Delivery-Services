@@ -9,7 +9,7 @@ const globalErrorHandler = (err, req, res, next) => {
       message: err.message,
     });
   }
-  
+
   if (err.status && err.message) {
     return res.status(err.status).json({
       status: err.status,

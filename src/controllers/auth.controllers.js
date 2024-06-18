@@ -7,8 +7,15 @@ export class AuthController {
 
   signUp = async (req, res, next) => {
     try {
-      const { email, password, name, nickname, address, phoneNumber } =
-        req.body;
+      const {
+        email,
+        password,
+        name,
+        nickname,
+        address,
+        phoneNumber,
+        emailValidator,
+      } = req.body;
       const userData = await this.authService.signUp({
         email,
         password,
@@ -16,6 +23,7 @@ export class AuthController {
         nickname,
         address,
         phoneNumber,
+        emailValidator,
       });
 
       return res
@@ -36,6 +44,7 @@ export class AuthController {
         restaurantAddress,
         restaurantType,
         restaurantPhoneNumber,
+        emailValidator,
       } = req.body;
 
       const userData = await this.authService.signUpRestaurant({
@@ -46,6 +55,7 @@ export class AuthController {
         restaurantAddress,
         restaurantType,
         restaurantPhoneNumber,
+        emailValidator,
       });
 
       return res
@@ -75,7 +85,8 @@ export class AuthController {
   sendVerificationEmail = async (req, res, next) => {
     try {
       const { email, role } = req.body;
-      await this.authService.sendVerificationEmail({email, role});
+      await this.authService.sendVerificationEmail({ email, role });
+
       return res
         .status(HTTP_STATUS.OK)
         .json({ message: '이메일 인증번호가 성공적으로 발송되었습니다.' });
@@ -86,7 +97,7 @@ export class AuthController {
 
   verifyEmail = async (req, res, next) => {
     try {
-      const { email, emailCode, role} = req.body;
+      const { email, emailCode, role } = req.body;
       await this.authService.verifyEmail({ email, emailCode, role });
       return res
         .status(HTTP_STATUS.OK)
