@@ -15,7 +15,7 @@ const authController = new AuthController(authService);
 authRouter.post('/users/sign-up', signUpValidator, authController.signUp);
 authRouter.post('/users/sign-in', signInValidator, authController.signIn);
 authRouter.post('/restaurants/sign-up', restaurantSignUpValidator, authController.signUpRestaurant);
-authRouter.post('/email', authController.sendVerificationEmail);
-authRouter.get('/email/code', authController.verifyEmail);
+authRouter.post('/email/code', authController.sendVerificationEmail);
+authRouter.post('/email/validator', authController.verifyEmail);
 
 export { authRouter };
