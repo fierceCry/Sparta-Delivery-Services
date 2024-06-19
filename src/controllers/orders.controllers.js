@@ -29,7 +29,6 @@ export class OrdersController{
             const user = req.user;
             const userId = user.id;
             const {restaurantId} = req.params;
-            
             const createOrderFromCart = await this.orderService.createOrderFromCart({userId, restaurantId});
 
             return res.status(HTTP_STATUS.CREATED).json({
@@ -44,11 +43,11 @@ export class OrdersController{
     bossConfirmOrder = async (req, res, next) => {
         try {
             const user = req.user;
-            const userId = user.id;
+            const restaurantId = user.id;
+            const {orderId} = req.params;
+            const confirmOrder = await this.orderService.confirmOrder({restaurantId, orderId});
 
-            const confirmOrder = this.orderService.confirmOrder({userId});
-
-            return res.status(HTTP_STATUS).json({
+            return res.status(HTTP_STATUS.CREATED).json({
                 message: "주문을 수락하였습니다."
             })
 
@@ -57,34 +56,34 @@ export class OrdersController{
         }
     }
 
-//     bossDeliveryOrder = async (req, res, next) => {
-//         try {
-//             const user = req.user;
-//             const userId = user.id;
-//             const {orderId} = req.params;
+    bossDeliveryOrder = async (req, res, next) => {
+        try {
+            const user = req.user;
+            const restaurantId = user.id;
+            const {orderId} = req.params;
 
-//             const deliveryOrder = this.orderService.deliveryOrder({userId, orderId});
+            const deliveryOrder = await this.orderService.deliveryOrder({restaurantId, orderId});
 
-//             return res.status(HTTP_STATUS).json({
-//                 message: "배달을 시작하세요."
-//             })
-//         } catch (error) {
-//             next(error);
-//         }
-//     }
-//     bossDeliveryComplete = async (req, res, next) => {
-//         try {
-//             const user = req.user;
-//             const userId = user.id;
-//             const {orderId} = req.params;
+            return res.status(HTTP_STATUS.CREATED).json({
+                message: "배달을 시작하세요."
+            })
+        } catch (error) {
+            next(error);
+        }
+    }
+    bossDeliveryComplete = async (req, res, next) => {
+        try {
+            const user = req.user;
+            const restaurantId = user.id;
+            const {orderId} = req.params;
 
-//             const deliveryComplete = this.orderService.deliveryComplete({userId, orderId});
+            const deliveryComplete = this.orderService.deliveryComplete({restaurantId, orderId});
 
-//             return res.status(HTTP_STATUS).json({
-//                 message: "배달을 완료하셨습니다."
-//             })
-//         } catch (error) {
-//             next(error);
-//         }
-//     }
+            return res.status(HTTP_STATUS.CREATED).json({
+                message: "배달을 완료하셨습니다."
+            })
+        } catch (error) {
+            next(error);
+        }
+    }
 }

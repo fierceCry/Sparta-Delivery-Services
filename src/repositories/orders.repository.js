@@ -1,4 +1,3 @@
-
 export class OrdersRepository {
     constructor(prisma) {
         this.prisma = prisma;
@@ -44,7 +43,7 @@ export class OrdersRepository {
                         id: +foodId
                     }
                 },
-                user : {
+                user: {
                     connect: {
                         id: userId
                     }
@@ -65,25 +64,25 @@ export class OrdersRepository {
             // 1. 카트 가져오기
             const order = await tx.orders.findFirst({
                 where: {
-                  userId: userId,
-                  restaurantId: +restaurantId,
-                  state: 'CART'
+                    userId: userId,
+                    restaurantId: +restaurantId,
+                    state: 'CART'
                 }
-              });
-              
-              if (!order) {
+            });
+
+            if (!order) {
                 throw new Error('No cart found');
-              }
-              
-              const cart = await tx.customerOrdersStorage.findMany({
+            }
+
+            const cart = await tx.customerOrdersStorage.findMany({
                 where: {
-                  ordersId: order.id
+                    ordersId: order.id
                 }
-              });
-              
-              if (!cart || cart.length === 0) {
+            });
+
+            if (!cart || cart.length === 0) {
                 throw new Error('Cart is empty');
-              }
+            }
             // 2. 주문상태로 변경하고 결제 처리하기
             const userPoints = await tx.users.findUnique({
                 where: {
@@ -109,7 +108,7 @@ export class OrdersRepository {
             if (totalPrice > userPoints.points) {
                 throw new error('보유잔액이 모자랍니다.')
             }
-            const updateOrder = await tx.orders.update({
+            await tx.orders.update({
                 where: {
                     id: order.id
                 },
@@ -117,7 +116,7 @@ export class OrdersRepository {
                     state: 'PENDING'
                 }
             });
-            const userPointsUpdate = await tx.users.update({
+            await tx.users.update({
                 where: {
                     id: userId
                 },
@@ -128,38 +127,42 @@ export class OrdersRepository {
         });
     }
 
-        confirmOrder = async ({ userId}) => {
-            const confirmOrder = await this.prisma.orders.update({
+
+    confirmOrder = async ({ restaurantId, orderId }) => {
+        const confirmOrder = await this.prisma.orders.update({
+            where: {
+                id: +orderId,
+                restaurantId: restaurantId,
+                state: 'PENDING'
+            },
+            data: {
+                state: 'PREPARING'
+            }
+        });
+    }
+    deliveryOrder = async ({ restaurantId, orderId }) => {
+        const deliveryOrder = await this.prisma.orders.update({
+            where: {
+                id: +orderId,
+                restaurantId: restaurantId,
+                state: 'PREPARING'
+            },
+            data: {
+                state: 'DELIVERING'
+            }
+        });
+    }
+
+        deliveryComplete = async ({ restaurantId, orderId }) => {
+            const deliveryComplete = await this.prisma.orders.update({
                 where: {
-                    restaurntId: userId,
-                    state: 'PENDING'
+                    id: +orderId,
+                    restaurantId: restaurantId,
+                    state: 'DELIVERING'
                 },
                 data: {
-                    state: 'PREPARING'
+                    state: 'DELIVERED'
                 }
-            });
+            })
         }
-        // deliveryOrder = async ({ userId, orderId }) => {
-        //     const deliveryOrder = await this.prisma.orders.update({
-        //         where: {
-        //             id: +orderId,
-        //             restaurantId: userId
-        //         },
-        //         data: {
-        //             state: 'DELIVERING'
-        //         }
-        //     });
-        // }
-
-    //     deliveryComplete = async ({ userId, orderId }) => {
-    //         const deliveryComplete = await this.prisma.orders.upadate({
-    //             where: {
-    //                 id: +orderId,
-    //                 restaurantId: userId
-    //             },
-    //             data: {
-    //                 state: 'DELIVERED'
-    //             }
-    //         })
-    //     }
 }
