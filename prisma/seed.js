@@ -64,7 +64,27 @@ async function main() {
     },
   });
 
-  console.log({ user1, user2, restaurant1, restaurant2 });
+  const foods1 = await prisma.foods.create({
+    data: {
+      restaurantId: restaurant1.id,
+      name: "양념치킨 햄버거",
+      price: 1,
+      imageUrl: {data : "https://google.com"},
+    }
+
+  })
+
+  const foods2 = await prisma.foods.create({
+    data: {
+
+      restaurantId: restaurant1.id,
+      name: "햄버거 피자",
+      price: 2,
+      imageUrl: {data : "https://google.com"},
+    }
+  })
+
+  console.log({ user1, user2, restaurant1, restaurant2, foods1, foods2 });
 }
 
 main()
