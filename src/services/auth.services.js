@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import nodeMailer from 'nodemailer';
-import { redisClient, redisCli } from '../utils/utils.redis.js';
+import { redisCli } from '../utils/utils.redis.js';
 import { HttpError } from '../errors/http.error.js';
 import { ENV_KEY } from '../constants/env.constants.js';
 import { generateRandomCode } from '../utils/utils.random.js';
@@ -146,7 +146,7 @@ export class AuthService {
     const emailCode = generateRandomCode();
 
     const key = `${email}:${role}`;
-    await redisClient.set(key, emailCode, 'EX', '200');
+    await redisCli.set(key, emailCode, { EX: 200 });
 
     const mailOptions = {
       to: email,

@@ -5,7 +5,7 @@ export class UserRepository {
     this.prisma = prisma;
   }
   findByToken = async (id) => {
-    return await prisma.refreshToken.findUnique({
+    return await this.prisma.refreshToken.findUnique({
       where: { userId: id },
     });
   };
@@ -16,14 +16,13 @@ export class UserRepository {
         where: { id: userId },
       });
     } else if (role === USER_ROLES.RESTAURANT) {
-      return await prisma.restaurants.findUnique({
+      return await this.prisma.restaurants.findUnique({
         where: { id: userId },
       });
     }
   };
 
   updateUser = async (id, name, nickname, phoneNumber, address) => {
-    console.log(id);
     const user = await this.prisma.Users.update({
       where: { id: +id },
       data: {

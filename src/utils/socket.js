@@ -69,29 +69,12 @@ const handleMessage = async (message, ws) => {
     const parsedMessage = JSON.parse(message);
 
     if (parsedMessage.type === 'new_order') {
-      await handleNewOrder(parsedMessage.data, ws);
+      await notifyNewOrder(parsedMessage.data);
+    } else if (parsedMessage.type === 'delivery_completed') {
+      await notifyDeliveryCompleted(parsedMessage.data);
     }
   } catch (error) {
     console.error('Error processing message:', error);
-  }
-};
-
-const handleNewOrder = async ({ userId, restaurantId, orderId }, ws) => {
-  const notificationMessage = `새로운 주문이 생성되었습니다. 주문 ID: ${orderId}`;
-  
-  // await notificationRepository.notificationsCreate(userId, restaurantId, orderId, notificationMessage);
-
-  const restaurantOwnerWebSocket = await findRestaurantOwnerWebSocket(
-    restaurantId
-  );
-  if (restaurantOwnerWebSocket) {
-    restaurantOwnerWebSocket.send(
-      JSON.stringify({ type: 'notification', data: notificationMessage })
-    );
-  } else {
-    console.warn(
-      `식당 주인의 WebSocket 연결을 찾을 수 없습니다. 식당 ID: ${restaurantId}`
-    );
   }
 };
 
@@ -103,4 +86,29 @@ const findRestaurantOwnerWebSocket = async (restaurantId) => {
   return null;
 };
 
-export { createWebSocketServer };
+const notifyNewOrder = async ({ userId, restaurantId, orderId }) => {
+  const notificationMessage = `새로운 주문이 생성되었습니다. 주문 ID: ${orderId}`;
+
+  // await notificationRepository.notificationsCreate(userId, restaurantId, orderId, notificationMessage);
+
+  const restaurantOwnerWebSocket = await findRestaurantOwnerWebSocket(restaurantId);
+  if (restaurantOwnerWebSocket) {
+    restaurantOwnerWebSocket.send(JSON.stringify({ type: 'notification', data: notificationMessage }));
+  } else {
+    console.warn(`식당 주인의 WebSocket 연결을 찾을 수 없습니다. 식당 ID: ${restaurantId}`);
+  }
+};
+
+const notifyDeliveryCompleted = async ({ userId, orderId }) => {
+  const notificationMessage = `배달이 완료되었습니다. 주문 ID: ${orderId}`;
+
+  // 고객의 WebSocket 연결을 찾습니다.
+  const customerWebSocket = customerConnections.get(userId);
+  if (customerWebSocket) {
+    customerWebSocket.send(JSON.stringify({ type: 'notification', data: notificationMessage }));
+  } else {
+    console.warn(`고객님의 WebSocket 연결을 찾을 수 없습니다. 사용자 ID: ${userId}`);
+  }
+};
+
+export { createWebSocketServer, notifyNewOrder, notifyDeliveryCompleted };
