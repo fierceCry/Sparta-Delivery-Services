@@ -11,9 +11,6 @@ const schema = Joi.object({
   content: Joi.string().required().messages({
     'any.required': '리뷰 내용을 입력해 주세요.',
   }),
-  imageUrl: Joi.string().uri().required().messages({
-    'any.required': '이미지 경로를 입력해주세요.',
-  }),
 });
 
 export const createReiveValidator = async (req, res, next) => {

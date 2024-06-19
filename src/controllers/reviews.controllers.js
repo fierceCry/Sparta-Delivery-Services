@@ -1,16 +1,18 @@
 import { getStarRating } from '../constants/review.constants.js';
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
+
 export class ReviewsController {
   constructor(reviewsService) {
     this.reviewsService = reviewsService;
   }
+
   /* 리뷰 및 평점 생성 */
   create = async (req, res, next) => {
     try {
       const user = req.user;
       const { customerordersstorageId } = req.params;
       const { rate, content } = req.body;
-      const image = req.file;
+      const image = req.file; // req.file 사용
 
       // 별표로 변환
       const starRating = getStarRating(rate);
@@ -68,7 +70,7 @@ export class ReviewsController {
       const user = req.user;
       const { reviewId } = req.params;
       const { rate, content } = req.body;
-      const image = req.file;
+      const image = req.file; // req.file 사용
 
       // 별표로 변환
       const starRating = getStarRating(rate);

@@ -5,6 +5,7 @@ export class ReviewsService {
   constructor(reviewsRepository) {
     this.reviewsRepository = reviewsRepository;
   }
+
   /* 리뷰 및 평점 생성 */
   create = async (user, customerordersstorageId, rate, content, image) => {
     const order = await this.reviewsRepository.findOrderById(
@@ -16,10 +17,10 @@ export class ReviewsService {
       throw new HttpError.NotFound('존재하지 않는 주문 정보입니다.');
     }
 
-    //이미지 s3 업로드
+    // 이미지 s3 업로드
     const imageUrl = await uploadImageS3(image);
 
-    //리뷰 생성
+    // 리뷰 생성
     const data = await this.reviewsRepository.create({
       userId: user.id,
       restaurantId: order.restaurantId,
@@ -64,7 +65,11 @@ export class ReviewsService {
       throw new HttpError.NotFound('존재하지 않는 리뷰입니다.');
     }
 
-    //이미지 s3 업로드
+    if (!image) {
+      throw new HttpError.BadRequest('이미지를 입력해주세요');
+    }
+
+    // 이미지 s3 업로드
     const imageUrl = image ? await uploadImageS3(image) : data.imageUrl;
 
     // 리뷰 수정

@@ -6,8 +6,10 @@ import { updateReiveValidator } from '../middlewarmies/validation/update-review-
 import { ReviewsController } from '../controllers/reviews.controllers.js';
 import { ReviewsService } from '../services/reviews.services.js';
 import { ReviewsRepository } from '../repositories/reviews.repository.js';
+import multer from 'multer';
 
 const reviewRouter = Router();
+const upload = multer();
 
 const reviewsRepository = new ReviewsRepository(prisma);
 const reviewsService = new ReviewsService(reviewsRepository);
@@ -17,6 +19,7 @@ const reviewsController = new ReviewsController(reviewsService);
 reviewRouter.post(
   '/orders/:customerordersstorageId/reviews',
   authMiddleware,
+  upload.single('image'),
   createReiveValidator,
   reviewsController.create
 );
@@ -35,6 +38,7 @@ reviewRouter.get(
 reviewRouter.patch(
   '/reviews/:reviewId',
   authMiddleware,
+  upload.single('image'),
   updateReiveValidator,
   reviewsController.update
 );

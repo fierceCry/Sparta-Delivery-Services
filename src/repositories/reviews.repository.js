@@ -61,7 +61,7 @@ export class ReviewsRepository {
       restaurantName: review.restaurants.restaurantName,
       rate: review.rate,
       content: review.content,
-      imageUrl: review.imageUrl,
+      imageUrl: JSON.parse(review.imageUrl),
       createdAt: review.createdAt,
       updatedAt: review.updatedAt,
     }));
@@ -94,7 +94,7 @@ export class ReviewsRepository {
       restaurantName: data.restaurants.restaurantName,
       rate: data.rate,
       content: data.content,
-      imageUrl: data.imageUrl,
+      imageUrl: JSON.parse(review.imageUrl),
       createdAt: data.createdAt,
       updatedAt: data.updatedAt,
     };
