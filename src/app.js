@@ -5,21 +5,6 @@ import { router } from './routers/index.js';
 import { globalErrorHandler } from './middlewarmies/error-handler.middleware.js';
 import { HTTP_STATUS } from './constants/http-status.constant.js';
 
-// import { prisma } from './utils/utils.prisma.js';
-// prisma.foods.groupBy({
-//   by: ['restaurantId'],
-//   where: {
-//     name: {
-//       search: "햄버거"
-//     },
-//   }
-// }).then((data) => {
-//   console.log({ data })
-// }).catch((err) => {
-//   console.log("THIS IS ERROR");
-//   console.error(err);
-// } )
-
 const app = express();
 
 app.use(express.json());

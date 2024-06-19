@@ -16,7 +16,7 @@ export class UserRepository {
         where: { id: userId },
       });
     } else if (role === USER_ROLES.RESTAURANT) {
-      return await prisma.restaurants.findUnique({
+      return await this.prisma.restaurants.findUnique({
         where: { id: userId },
       });
     }

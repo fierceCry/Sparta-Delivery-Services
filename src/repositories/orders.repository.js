@@ -140,6 +140,73 @@ export class OrdersRepository {
       });
     });
   };
+  createOrderFromCart = async ({ userId, restaurantId }) => {
+    return this.prisma.$transaction(async (tx) => {
+      // 1. 카트 가져오기
+      const order = await tx.orders.findFirst({
+        where: {
+          userId: userId,
+          restaurantId: +restaurantId,
+          state: 'CART',
+        },
+      });
+
+      if (!order) {
+        throw new Error('No cart found');
+      }
+
+      const cart = await tx.customerOrdersStorage.findMany({
+        where: {
+          ordersId: order.id,
+        },
+      });
+
+      if (!cart || cart.length === 0) {
+        throw new Error('Cart is empty');
+      }
+      // 2. 주문상태로 변경하고 결제 처리하기
+      const userPoints = await tx.users.findUnique({
+        where: {
+          id: userId,
+        },
+        select: {
+          points: true,
+        },
+      });
+      let cartsPrice = await tx.customerOrdersStorage.findMany({
+        where: {
+          ordersId: order.id,
+        },
+        select: {
+          orderPrice: true,
+        },
+      });
+      cartsPrice = cartsPrice.map((price) => price.orderPrice);
+      let totalPrice = 0;
+      await cartsPrice.forEach((price) => {
+        totalPrice += price;
+      });
+      if (totalPrice > userPoints.points) {
+        throw new error('보유잔액이 모자랍니다.');
+      }
+      await tx.orders.update({
+        where: {
+          id: order.id,
+        },
+        data: {
+          state: 'PENDING',
+        },
+      });
+      await tx.users.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          points: userPoints.points - totalPrice,
+        },
+      });
+    });
+  };
 
   confirmOrder = async ({ userId }) => {
     const confirmOrder = await this.prisma.orders.update({
@@ -164,6 +231,31 @@ export class OrdersRepository {
   //     });
   // }
 
+  confirmOrder = async ({ restaurantId, orderId }) => {
+    const confirmOrder = await this.prisma.orders.update({
+      where: {
+        id: +orderId,
+        restaurantId: restaurantId,
+        state: 'PENDING',
+      },
+      data: {
+        state: 'PREPARING',
+      },
+    });
+  };
+  deliveryOrder = async ({ restaurantId, orderId }) => {
+    const deliveryOrder = await this.prisma.orders.update({
+      where: {
+        id: +orderId,
+        restaurantId: restaurantId,
+        state: 'PREPARING',
+      },
+      data: {
+        state: 'DELIVERING',
+      },
+    });
+  };
+
   //     deliveryComplete = async ({ userId, orderId }) => {
   //         const deliveryComplete = await this.prisma.orders.upadate({
   //             where: {
@@ -175,4 +267,16 @@ export class OrdersRepository {
   //             }
   //         })
   //     }
+  deliveryComplete = async ({ restaurantId, orderId }) => {
+    const deliveryComplete = await this.prisma.orders.update({
+      where: {
+        id: +orderId,
+        restaurantId: restaurantId,
+        state: 'DELIVERING',
+      },
+      data: {
+        state: 'DELIVERED',
+      },
+    });
+  };
 }

@@ -1,5 +1,3 @@
-import { HttpError } from "../errors/http.error.js";
-
 export class OrdersService{
     constructor(ordersRepository){
         this.ordersRepository = ordersRepository;
@@ -7,40 +5,25 @@ export class OrdersService{
 
     addToCart= async ({userId, restaurantId, foodId, count}) => {
             const addToCart = await this.ordersRepository.addToCart({userId, restaurantId, foodId, count});
-            if(!userId){
-                throw new HttpError.NotFound("인증정보가 유효하지 않습니다.");
-            }
-    };
+    }
 
     createOrderFromCart = async ({userId, restaurantId}) => {
-        const createOrderFromCart = await this.ordersRepository.createOrderFromCart({userId, restaurantId});
-        if(!userId){
-            throw new HttpError.NotFound("인증정보가 유효하지 않습니다.");
-        }
+        return await this.ordersRepository.createOrderFromCart({userId, restaurantId});
     }
 
 
-    confirmOrder = async({userId}) => {
-        const bossConfirmOrder = await this.ordersRepository.confirmOrder({userId});
-        if(!userId){
-            throw new HttpError.NotFound("인증정보가 유효하지 않습니다.");
-        }
+    confirmOrder = async({restaurantId, orderId}) => {
+        const bossConfirmOrder = await this.ordersRepository.confirmOrder({restaurantId, orderId});
         return bossConfirmOrder;
     }
 
-//     deliveryOrder = async({userId, orderId}) => {
-//         const deliveryOrder = await this.ordersRepository.deliveryOrder({userId, orderId});
-//         if(!userId){
-//             throw new HttpError.NotFound("인증정보가 유효하지 않습니다.");
-//         }
-//         return deliveryOrder;
-//     }
+    deliveryOrder = async({restaurantId, orderId}) => {
+        const deliveryOrder = await this.ordersRepository.deliveryOrder({restaurantId, orderId});
+        return deliveryOrder;
+    }
 
-//     deliveryComplete = async({userId, orderId}) => {
-//         const deliveryComplete = await this.ordersRepository.deliveryComplete({userId, orderId});
-//         if(!userId){
-//             throw new HttpError.NotFound("인증정보가 유효하지 않습니다.");
-//         }
-//         return deliveryComplete;
-//     }
+    deliveryComplete = async({restaurantId, orderId}) => {
+        const deliveryComplete = await this.ordersRepository.deliveryComplete({restaurantId, orderId});
+        return deliveryComplete;
+    }
 }
