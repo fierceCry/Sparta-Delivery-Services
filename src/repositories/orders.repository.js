@@ -108,7 +108,7 @@ export class OrdersRepository {
       if (totalPrice > userPoints.points) {
         throw new error('보유잔액이 모자랍니다.');
       }
-      const updateOrder = await tx.orders.update({
+      await tx.orders.update({
         where: {
           id: order.id,
         },
@@ -117,18 +117,19 @@ export class OrdersRepository {
         },
       });
       const findRestaruantsTotalPrice = await tx.restaurants.findFirst({
-        where: { id: restaurantId },
+        where: { id: +restaurantId },
         select: {
-          totalPrice: true,
+          restaurantTotalPrice: true,
         },
       });
       const updateRestaurantTotalPrice = await tx.restaurants.update({
-        where: { id: restaurantId },
+        where: { id: +restaurantId },
         data: {
-          totalPrice: findRestaruantsTotalPrice.totalPrice - totalPrice,
+          restaurantTotalPrice:
+            findRestaruantsTotalPrice.restaurantTotalPrice + totalPrice,
         },
       });
-      const userPointsUpdate = await tx.users.update({
+      await tx.users.update({
         where: {
           id: userId,
         },
@@ -139,10 +140,11 @@ export class OrdersRepository {
     });
   };
 
-  confirmOrder = async ({ userId }) => {
+  confirmOrder = async ({ restaurantId, orderId }) => {
     const confirmOrder = await this.prisma.orders.update({
       where: {
-        restaurntId: userId,
+        id: +orderId,
+        restaurantId: restaurantId,
         state: 'PENDING',
       },
       data: {
@@ -150,27 +152,29 @@ export class OrdersRepository {
       },
     });
   };
-  // deliveryOrder = async ({ userId, orderId }) => {
-  //     const deliveryOrder = await this.prisma.orders.update({
-  //         where: {
-  //             id: +orderId,
-  //             restaurantId: userId
-  //         },
-  //         data: {
-  //             state: 'DELIVERING'
-  //         }
-  //     });
-  // }
+  deliveryOrder = async ({ restaurantId, orderId }) => {
+    const deliveryOrder = await this.prisma.orders.update({
+      where: {
+        id: +orderId,
+        restaurantId: restaurantId,
+        state: 'PREPARING',
+      },
+      data: {
+        state: 'DELIVERING',
+      },
+    });
+  };
 
-  //     deliveryComplete = async ({ userId, orderId }) => {
-  //         const deliveryComplete = await this.prisma.orders.upadate({
-  //             where: {
-  //                 id: +orderId,
-  //                 restaurantId: userId
-  //             },
-  //             data: {
-  //                 state: 'DELIVERED'
-  //             }
-  //         })
-  //     }
+  deliveryComplete = async ({ restaurantId, orderId }) => {
+    const deliveryComplete = await this.prisma.orders.update({
+      where: {
+        id: +orderId,
+        restaurantId: restaurantId,
+        state: 'DELIVERING',
+      },
+      data: {
+        state: 'DELIVERED',
+      },
+    });
+  };
 }
