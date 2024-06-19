@@ -86,6 +86,7 @@ export class AuthController {
     try {
       const { email, role } = req.body;
       await this.authService.sendVerificationEmail({ email, role });
+
       return res
         .status(HTTP_STATUS.OK)
         .json({ message: '이메일 인증번호가 성공적으로 발송되었습니다.' });
