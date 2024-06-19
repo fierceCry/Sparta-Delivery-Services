@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
 datasource db {
@@ -60,6 +61,10 @@ model Restaurants {
   reviewsComments      ReviewsComments[]
 
   @@map("restaurants")
+  @@fulltext([restaurantName])
+  @@fulltext([restaurantAddress])
+  @@fulltext([restaurantType])
+  @@fulltext([restaurantName, restaurantAddress, restaurantType])
 }
 
 model Notifications {
@@ -107,26 +112,23 @@ model Foods {
   updatedAt    DateTime @updatedAt @map("updated_at")
 
   restaurants          Restaurants             @relation(fields: [restaurantId], references: [id])
-  orders               Orders[]
   customerOrderStorage CustomerOrdersStorage[]
 
   @@unique([id, restaurantId])
   @@map("foods")
+  @@fulltext([name])
 }
 
 model Orders {
   id           Int       @id @default(autoincrement())
   userId       Int       @map("user_id")
   restaurantId Int       @map("restaurant_id")
-  foodsId      Int       @map("foods_id")
-  orderPrice   Int       @map("order_price")
   state        StateEnum
   createdAt    DateTime  @default(now()) @map("created_at")
   updatedAt    DateTime  @updatedAt @map("updated_at")
 
   users                Users                   @relation(fields: [userId], references: [id])
   restaurant           Restaurants             @relation(fields: [restaurantId], references: [id])
-  food                 Foods                   @relation(fields: [foodsId], references: [id])
   customerOrderStorage CustomerOrdersStorage[]
 
   @@map("orders")
@@ -138,8 +140,9 @@ model CustomerOrdersStorage {
   userId        Int      @map("user_id")
   foodsId       Int      @map("foods_id")
   ordersId      Int      @map("orders_id")
-  orderprice    Int
-  foodprice     Int
+  orderPrice    Int      @map("order_price")
+  foodPrice     Int      @map("food_Price")
+  quantity      Int
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
 
@@ -147,8 +150,8 @@ model CustomerOrdersStorage {
   notification Notifications[]
   order        Orders          @relation(fields: [ordersId], references: [id])
   food         Foods           @relation(fields: [foodsId], references: [id])
-  users        Users           @relation(fields: [userId], references: [id])
-  restaurants  Restaurants     @relation(fields: [restaurantsId], references: [id])
+  user        Users           @relation(fields: [userId], references: [id])
+  restaurant  Restaurants     @relation(fields: [restaurantsId], references: [id])
 
   @@map("customer_orders_storage")
 }
@@ -180,6 +183,8 @@ model RefreshToken {
 }
 
 enum StateEnum {
+  CART
+  PENDING
   PREPARING
   DELIVERING
   DELIVERED

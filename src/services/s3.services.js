@@ -13,3 +13,15 @@ export const uploadImageS3 = async (file) => {
   const data = await s3.upload(params).promise();
   return data.Location;
 };
+
+export const deleteImageS3 = async (imageUrl) => {
+  const url = new URL(imageUrl);
+  const key = url.pathname.substring(1);
+
+  const params = {
+    Bucket: ENV_KEY.AWS_S3_BUCKET_NAME,
+    Key: key,
+  };
+
+  await s3.deleteObject(params).promise();
+};

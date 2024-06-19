@@ -1,18 +1,21 @@
 import { Router } from 'express';
 import { prisma } from '../utils/utils.prisma.js';
 import { authMiddleware } from '../middlewarmies/require-access-token.middleware.js';
-import { createReiveValidator } from '../middlewarmies/validation/create-review-validator.middleware.js';
-import { updateReiveValidator } from '../middlewarmies/validation/update-review-validator.middleware.js';
+import { createReiWeValidator } from '../middlewarmies/validation/create-review-validator.middleware.js';
+import { updateReiWeValidator } from '../middlewarmies/validation/update-review-validator.middleware.js';
 import { ReviewsController } from '../controllers/reviews.controllers.js';
 import { ReviewsService } from '../services/reviews.services.js';
 import { ReviewsRepository } from '../repositories/reviews.repository.js';
 import multer from 'multer';
+import { OrdersRepository } from '../repositories/orders.repository.js';
 
 const reviewRouter = Router();
-const upload = multer();
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
+const ordersRepository = new OrdersRepository(prisma);
 const reviewsRepository = new ReviewsRepository(prisma);
-const reviewsService = new ReviewsService(reviewsRepository);
+const reviewsService = new ReviewsService(reviewsRepository, ordersRepository);
 const reviewsController = new ReviewsController(reviewsService);
 
 /* 리뷰 및 평점 생성 */
@@ -20,7 +23,7 @@ reviewRouter.post(
   '/orders/:customerordersstorageId/reviews',
   authMiddleware,
   upload.array('images', 5),
-  createReiveValidator,
+  createReiWeValidator,
   reviewsController.create
 );
 
@@ -39,7 +42,7 @@ reviewRouter.patch(
   '/reviews/:reviewId',
   authMiddleware,
   upload.array('images', 5),
-  updateReiveValidator,
+  updateReiWeValidator,
   reviewsController.update
 );
 

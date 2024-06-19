@@ -13,7 +13,7 @@ const schema = Joi.object({
   }),
 });
 
-export const createReiveValidator = async (req, res, next) => {
+export const createReiWeValidator = async (req, res, next) => {
   try {
     await schema.validateAsync(req.body);
     next();
