@@ -24,10 +24,7 @@ restaurantsRouter.patch(
   restaurantUpdateValidator,
   restaurantsController.updateRestaurants
 );
-restaurantsRouter.patch(
-  '/totalPrice',
-  restaurantsController.updateRestaurantsTotalPrice
-);
+
 restaurantsRouter.get('/rankings', restaurantsController.getRankings);
 
 export { restaurantsRouter };

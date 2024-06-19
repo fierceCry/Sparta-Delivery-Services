@@ -30,17 +30,6 @@ export class RestaurantsService {
     };
   };
 
-  updateRestaurantsTotalPrice = async () => {
-    const findAllRestaruants =
-      await this.restaurantsRepository.getAllRestaurants();
-    const findById = findAllRestaruants.map((el) => ({
-      id: el.id,
-    }));
-    const findOrderPirce = this.restaurantsRepository.findOrderPrice();
-
-    return null;
-  };
-
   getRankings = async () => {
     const restaruantsRanking = await this.restaurantsRepository.getRankings();
 

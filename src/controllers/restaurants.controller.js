@@ -54,20 +54,6 @@ export class RestaurantsController {
     });
   };
 
-  updateRestaurantsTotalPrice = async (req, res, next) => {
-    try {
-      const data = await this.restaurantsService.updateRestaurantsTotalPrice();
-      if (!data) {
-        throw new Error('데이터가 존재하지않습니다.');
-      }
-      return res
-        .status(HTTP_STATUS.OK)
-        .json({ message: '정상적으로 업데이트 완료되었습니다.', data });
-    } catch (err) {
-      next(err);
-    }
-  };
-
   getRankings = async (req, res) => {
     const data = await this.restaurantsService.getRankings();
 

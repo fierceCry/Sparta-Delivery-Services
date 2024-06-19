@@ -3,7 +3,20 @@ import { ENV_KEY } from './constants/env.constants.js';
 import { requestLogger } from './middlewarmies/log.middleware.js';
 import { router } from './routers/index.js';
 import { globalErrorHandler } from './middlewarmies/error-handler.middleware.js';
-
+// import { prisma } from './utils/utils.prisma.js';
+// prisma.foods.groupBy({
+//   by: ['restaurantId'],
+//   where: {
+//     name: {
+//       search: "햄버거"
+//     },
+//   }
+// }).then((data) => {
+//   console.log({ data })
+// }).catch((err) => {
+//   console.log("THIS IS ERROR");
+//   console.error(err);
+// } )
 const app = express();
 
 app.use(express.json());
