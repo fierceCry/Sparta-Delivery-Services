@@ -12,6 +12,7 @@ const restaurantsRepository = new RestaurantsRepository(prisma);
 const restaurantsService = new RestaurantsService(restaurantsRepository);
 const restaurantsController = new RestaurantsController(restaurantsService);
 
+restaurantsRouter.get('/all', restaurantsController.getAllRestaurants);
 restaurantsRouter.get(
   '/me',
   authMiddleware,
@@ -23,7 +24,10 @@ restaurantsRouter.patch(
   restaurantUpdateValidator,
   restaurantsController.updateRestaurants
 );
-
-restaurantsRouter.get('/rankings',restaurantsController.getRankings);
+restaurantsRouter.patch(
+  '/totalPrice',
+  restaurantsController.updateRestaurantsTotalPrice
+);
+restaurantsRouter.get('/rankings', restaurantsController.getRankings);
 
 export { restaurantsRouter };

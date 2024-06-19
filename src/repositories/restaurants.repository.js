@@ -2,12 +2,19 @@ export class RestaurantsRepository {
   constructor(prisma) {
     this.prisma = prisma;
   }
+  getAllRestaurants = async () => {
+    const data = await this.prisma.Restaurants.findMany();
+
+    return data;
+  };
+
   updateRestaurants = async (
     id,
     restaurantName,
     restaurantAddress,
     restaurantType,
-    restaurantPhoneNumber
+    restaurantPhoneNumber,
+    restaurantTotalPrice
   ) => {
     const restaurants = await this.prisma.Restaurants.update({
       where: { id },
@@ -16,18 +23,18 @@ export class RestaurantsRepository {
         restaurantAddress,
         restaurantType,
         restaurantPhoneNumber,
-        updatedAt: new Date(),
+        restaurantTotalPrice,
       },
     });
     return restaurants;
   };
 
-  getRankings = async() => {
+  getRankings = async () => {
     const restaruantsRanking = await this.prisma.Restaurants.findMany({
       orderBy: {
-        restaurantTotalPrice: 'asc' // 오름차순 정렬
-      }
-    })
-    return restaruantsRanking
-  }
+        restaurantTotalPrice: 'desc', // 오름차순 정렬
+      },
+    });
+    return restaruantsRanking;
+  };
 }

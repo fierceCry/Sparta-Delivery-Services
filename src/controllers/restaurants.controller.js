@@ -4,6 +4,20 @@ export class RestaurantsController {
   constructor(restaurantsService) {
     this.restaurantsService = restaurantsService;
   }
+  getAllRestaurants = async (req, res, next) => {
+    try {
+      const data = await this.restaurantsService.getAllRestaurants();
+      if (!data) {
+        throw new Error('데이터가 존재하지않습니다.');
+      }
+      return res
+        .status(HTTP_STATUS.OK)
+        .json({ message: '정상적으로 정보조회가 완료되었습니다.', data });
+    } catch (err) {
+      next(err);
+    }
+  };
+
   getRestaurants = async (req, res) => {
     const restaurant = req.user;
 
@@ -22,6 +36,7 @@ export class RestaurantsController {
       restaurantAddress,
       restaurantType,
       restaurantPhoneNumber,
+      restaurantTotalPrice,
     } = req.body;
 
     const restaurant = await this.restaurantsService.updateRestaurants(
@@ -29,7 +44,8 @@ export class RestaurantsController {
       restaurantName,
       restaurantAddress,
       restaurantType,
-      restaurantPhoneNumber
+      restaurantPhoneNumber,
+      restaurantTotalPrice
     );
 
     return res.status(HTTP_STATUS.CREATED).json({
@@ -38,16 +54,25 @@ export class RestaurantsController {
     });
   };
 
-  getRankings = async (req,res)=>{
-    const restaruantsRanking = await this.restaurantsService.getRankings();
+  updateRestaurantsTotalPrice = async (req, res, next) => {
+    try {
+      const data = await this.restaurantsService.updateRestaurantsTotalPrice();
+      if (!data) {
+        throw new Error('데이터가 존재하지않습니다.');
+      }
+      return res
+        .status(HTTP_STATUS.OK)
+        .json({ message: '정상적으로 업데이트 완료되었습니다.', data });
+    } catch (err) {
+      next(err);
+    }
+  };
 
-    const data = restaruantsRanking.map((el) => ({
-      restaurantName: el.restaurantName,
-      restaurantAddress: el.restaurantAddress,
-      restaurantPhoneNumber: el.restaurantPhoneNumber,
-      restaurantTotalPrice: el.restaurantTotalPrice
-    }));
+  getRankings = async (req, res) => {
+    const data = await this.restaurantsService.getRankings();
 
-    return res.status(HTTP_STATUS.OK).json({message: '정상적으로 조회가 완료되었습니다', data})
-  }
+    return res
+      .status(HTTP_STATUS.OK)
+      .json({ message: '정상적으로 조회가 완료되었습니다.', data });
+  };
 }
