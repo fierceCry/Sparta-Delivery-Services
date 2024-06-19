@@ -41,13 +41,9 @@ export class ReviewsRepository {
   };
 
   /* 리뷰 및 평점 목록 조회 */
-  readMany = async (user, sort = 'desc') => {
-    //리뷰 목록 정렬
-    const sortOrder = sort.toLowerCase() === 'asc' ? 'asc' : 'desc';
-
+  readMany = async (user) => {
     const reviews = await this.prisma.reviews.findMany({
       where: { userId: +user.id },
-      orderBy: { createdAt: sortOrder },
       select: {
         users: { select: { nickname: true } },
         restaurants: { select: { restaurantName: true } },

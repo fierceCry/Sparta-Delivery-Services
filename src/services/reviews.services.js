@@ -1,11 +1,12 @@
 import { HttpError } from '../errors/http.error.js';
+import { uploadImageS3 } from './s3.services.js';
 
 export class ReviewsService {
   constructor(reviewsRepository) {
     this.reviewsRepository = reviewsRepository;
   }
   /* 리뷰 및 평점 생성 */
-  create = async (user, customerordersstorageId, rate, content, imageUrl) => {
+  create = async (user, customerordersstorageId, rate, content, image) => {
     const order = await this.reviewsRepository.findOrderById(
       customerordersstorageId,
       user.id
@@ -14,6 +15,9 @@ export class ReviewsService {
     if (!order) {
       throw new HttpError.NotFound('존재하지 않는 주문 정보입니다.');
     }
+
+    //이미지 s3 업로드
+    const imageUrl = await uploadImageS3(image);
 
     //리뷰 생성
     const data = await this.reviewsRepository.create({
@@ -28,10 +32,18 @@ export class ReviewsService {
   };
 
   /* 리뷰 및 평점 목록 조회 */
-  readMany = async (user, sort) => {
-    const data = await this.reviewsRepository.readMany(user, sort);
+  readMany = async (user, sort = 'desc') => {
+    const data = await this.reviewsRepository.readMany(user);
+    //리뷰 목록 정렬
+    const sortOrder = sort.toLowerCase() === 'asc' ? 'asc' : 'desc';
 
-    return data;
+    return data.sort((a, b) => {
+      if (sortOrder === 'asc') {
+        return a.createdAt - b.createdAt;
+      } else {
+        return b.createdAt - a.createdAt;
+      }
+    });
   };
 
   /* 리뷰 및 평점 상세 조회 */
@@ -45,12 +57,15 @@ export class ReviewsService {
   };
 
   /* 리뷰 및 평점 수정 */
-  update = async (reviewId, user, rate, content, imageUrl) => {
+  update = async (reviewId, user, rate, content, image) => {
     let data = await this.reviewsRepository.readOne(reviewId, user);
 
     if (!data) {
       throw new HttpError.NotFound('존재하지 않는 리뷰입니다.');
     }
+
+    //이미지 s3 업로드
+    const imageUrl = image ? await uploadImageS3(image) : data.imageUrl;
 
     // 리뷰 수정
     data = await this.reviewsRepository.update(
