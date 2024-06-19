@@ -13,9 +13,6 @@ const schema = Joi.object({
   restaurantPhoneNumber: Joi.string().required().messages({
     'any.required': '업장 전화번호를 입력해주세요.',
   }),
-  restaurantTotalPrice: Joi.number().required().messages({
-    'any.required': '업장 가격를 입력해주세요.',
-  })
 });
 
 export const restaurantUpdateValidator = async (req, res, next) => {

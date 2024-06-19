@@ -12,7 +12,6 @@ const restaurantsRepository = new RestaurantsRepository(prisma);
 const restaurantsService = new RestaurantsService(restaurantsRepository);
 const restaurantsController = new RestaurantsController(restaurantsService);
 
-restaurantsRouter.get('/all', restaurantsController.getAllRestaurants);
 restaurantsRouter.get(
   '/me',
   authMiddleware,

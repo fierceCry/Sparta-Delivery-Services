@@ -36,7 +36,6 @@ export class RestaurantsController {
       restaurantAddress,
       restaurantType,
       restaurantPhoneNumber,
-      restaurantTotalPrice,
     } = req.body;
 
     const restaurant = await this.restaurantsService.updateRestaurants(
@@ -44,8 +43,7 @@ export class RestaurantsController {
       restaurantName,
       restaurantAddress,
       restaurantType,
-      restaurantPhoneNumber,
-      restaurantTotalPrice
+      restaurantPhoneNumber
     );
 
     return res.status(HTTP_STATUS.CREATED).json({

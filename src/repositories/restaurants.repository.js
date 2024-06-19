@@ -13,8 +13,7 @@ export class RestaurantsRepository {
     restaurantName,
     restaurantAddress,
     restaurantType,
-    restaurantPhoneNumber,
-    restaurantTotalPrice
+    restaurantPhoneNumber
   ) => {
     const restaurants = await this.prisma.Restaurants.update({
       where: { id },
@@ -23,7 +22,6 @@ export class RestaurantsRepository {
         restaurantAddress,
         restaurantType,
         restaurantPhoneNumber,
-        restaurantTotalPrice,
       },
     });
     return restaurants;

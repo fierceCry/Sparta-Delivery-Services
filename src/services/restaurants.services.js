@@ -13,16 +13,14 @@ export class RestaurantsService {
     restaurantName,
     restaurantAddress,
     restaurantType,
-    restaurantPhoneNumber,
-    restaurantTotalPrice
+    restaurantPhoneNumber
   ) => {
     const restaurants = await this.restaurantsRepository.updateRestaurants(
       id,
       restaurantName,
       restaurantAddress,
       restaurantType,
-      restaurantPhoneNumber,
-      restaurantTotalPrice
+      restaurantPhoneNumber
     );
     return {
       ...restaurants,
