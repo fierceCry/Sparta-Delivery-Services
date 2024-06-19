@@ -11,10 +11,11 @@ const ordersRepository = new OrdersRepository(prisma);
 const ordersService = new OrdersService(ordersRepository);
 const ordersController = new OrdersController(ordersService);
 
-ordersRouter.post('/restaurants/:restaurantId/foods/:foodId', authMiddleware, ordersController.customerOrder);
-ordersRouter.patch('/:ordersId', authMiddleware, ordersController.bossConfirmOrder);
-ordersRouter.patch('/:ordersId', authMiddleware, ordersController.bossDeliveryOrder);
-ordersRouter.patch('/:ordersId', authMiddleware, ordersController.bossDeliveryComplete);
+ordersRouter.post('/restaurants/:restaurantId/foods/:foodId', authMiddleware, ordersController.addToCart);
+ordersRouter.patch('/restaurants/:restaurantId', authMiddleware, ordersController.createOrderFromCart)
+ordersRouter.patch('/restaurants', authMiddleware, ordersController.bossConfirmOrder);
+// ordersRouter.patch('/:ordersId', authMiddleware, ordersController.bossDeliveryOrder);
+// ordersRouter.patch('/:ordersId', authMiddleware, ordersController.bossDeliveryComplete);
 
 
 export {ordersRouter};

@@ -64,6 +64,7 @@ model Restaurants {
   @@fulltext([restaurantName])
   @@fulltext([restaurantAddress])
   @@fulltext([restaurantType])
+  @@fulltext([restaurantName, restaurantAddress, restaurantType])
 }
 
 model Notifications {
@@ -122,7 +123,6 @@ model Orders {
   id           Int       @id @default(autoincrement())
   userId       Int       @map("user_id")
   restaurantId Int       @map("restaurant_id")
-  orderPrice   Int       @map("order_price")
   state        StateEnum
   createdAt    DateTime  @default(now()) @map("created_at")
   updatedAt    DateTime  @updatedAt @map("updated_at")
@@ -150,8 +150,8 @@ model CustomerOrdersStorage {
   notification Notifications[]
   order        Orders          @relation(fields: [ordersId], references: [id])
   food         Foods           @relation(fields: [foodsId], references: [id])
-  users        Users           @relation(fields: [userId], references: [id])
-  restaurants  Restaurants     @relation(fields: [restaurantsId], references: [id])
+  user        Users           @relation(fields: [userId], references: [id])
+  restaurant  Restaurants     @relation(fields: [restaurantsId], references: [id])
 
   @@map("customer_orders_storage")
 }
@@ -183,6 +183,7 @@ model RefreshToken {
 }
 
 enum StateEnum {
+  CART
   PENDING
   PREPARING
   DELIVERING

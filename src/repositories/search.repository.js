@@ -4,27 +4,32 @@ export class SearchRepository{
     }
 
     searchSystem = async(data) => {
-        console.log('hello')
         const findAtFoods = await this.prisma.foods.groupBy({
-            by : ['restaurantsId'],
+            by : ['restaurantId'],
             where : {
                 name: {
                     search: `${data}`
                 }
-            },
-            select : {
-                restaurantId: true
             }
         });
+        console.log("");
+        console.log(findAtFoods);
+        console.log("");
         const restaurantIds = findAtFoods.map(food => food.restaurantId)
-        const findByFoods = await this.prisma.restaurants.findMany({
-            where: {
-                in: restaurantIds
-            }
-        });
+        console.log("");
+        console.log(restaurantIds);
+        console.log("");
+        // const findByFoods = await this.prisma.restaurants.findMany({
+        //     where: {
+        //         id: restaurantIds
+        //     }
+        // });
+        // console.log("");
+        // console.log(findByFoods);
+        // console.log("");
 
         const findAtRestaurants = await this.prisma.restaurants.groupBy({
-            by : ['restaurantsId'],
+            by : ['id'],
             where: {
                 OR : [
                     {
@@ -45,6 +50,7 @@ export class SearchRepository{
                 ]
             }
         });
+        console.log(findAtRestaurants);
         const findedRestaurants = findAtRestaurants.push(...findByFoods);
         return findedRestaurants;
     }

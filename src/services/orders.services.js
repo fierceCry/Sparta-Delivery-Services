@@ -5,42 +5,42 @@ export class OrdersService{
         this.ordersRepository = ordersRepository;
     }
 
-    orderByCustomer = async ({userId, restaurantId, foodId, count}) => {
-        return this.ordersRepository.$transaction(async(tx) => {
-            const customerOrder = await tx.orderByCustomer({userId, restaurantId, foodId, count});
-            let totalPrice = 0;
-            await ordersPrice.forEach(price => {
-                totalPrice += price;
-            });
-            if(totalPrice>userPoints){
-                throw new HttpError.Conflict("잔액이 부족합니다.");
+    addToCart= async ({userId, restaurantId, foodId, count}) => {
+            const addToCart = await this.ordersRepository.addToCart({userId, restaurantId, foodId, count});
+            if(!userId){
+                throw new HttpError.NotFound("인증정보가 유효하지 않습니다.");
             }
-            const userPointsUpdate = await tx.userPointsUpdate({userId, userPoints, totalPrice});
-            return {customerOrder, userPointsUpdate};
-        });
-    }
+    };
 
-    confirmOrder = async({userId, orderId}) => {
-        const confirmOrder = this.ordersRepository.confirmOrder({userId, orderId});
+    createOrderFromCart = async ({userId, restaurantId}) => {
+        const createOrderFromCart = await this.ordersRepository.createOrderFromCart({userId, restaurantId});
         if(!userId){
             throw new HttpError.NotFound("인증정보가 유효하지 않습니다.");
         }
-        return confirmOrder;
     }
 
-    deliveryOrder = async({userId, orderId}) => {
-        const deliveryOrder = this.ordersRepository.deliveryOrder({userId, orderId});
+
+    confirmOrder = async({userId}) => {
+        const bossConfirmOrder = await this.ordersRepository.confirmOrder({userId});
         if(!userId){
             throw new HttpError.NotFound("인증정보가 유효하지 않습니다.");
         }
-        return deliveryOrder;
+        return bossConfirmOrder;
     }
 
-    deliveryComplete = async({userId, orderId}) => {
-        const deliveryComplete = this.ordersRepository.deliveryComplete({userId, orderId});
-        if(!userId){
-            throw new HttpError.NotFound("인증정보가 유효하지 않습니다.");
-        }
-        return deliveryComplete;
-    }
+//     deliveryOrder = async({userId, orderId}) => {
+//         const deliveryOrder = await this.ordersRepository.deliveryOrder({userId, orderId});
+//         if(!userId){
+//             throw new HttpError.NotFound("인증정보가 유효하지 않습니다.");
+//         }
+//         return deliveryOrder;
+//     }
+
+//     deliveryComplete = async({userId, orderId}) => {
+//         const deliveryComplete = await this.ordersRepository.deliveryComplete({userId, orderId});
+//         if(!userId){
+//             throw new HttpError.NotFound("인증정보가 유효하지 않습니다.");
+//         }
+//         return deliveryComplete;
+//     }
 }
