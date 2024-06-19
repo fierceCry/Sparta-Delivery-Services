@@ -34,6 +34,7 @@ const authMiddleware = async (req, res, next) => {
     }
 
     const payload = await validateToken(token, ENV_KEY.SECRET_KEY);
+    console.log(payload);
     if (payload === 'expired') {
       throw new HttpError.Unauthorized('인증 정보가 만료되었습니다.');
     } else if (payload === 'JsonWebTokenError') {

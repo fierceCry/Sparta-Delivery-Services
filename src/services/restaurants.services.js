@@ -21,4 +21,10 @@ export class RestaurantsService {
       bossPassword: undefined,
     };
   };
+
+  getRankings = async()=>{
+    const data = this.restaurantsRepository.getRankings()
+
+    return data
+}
 }

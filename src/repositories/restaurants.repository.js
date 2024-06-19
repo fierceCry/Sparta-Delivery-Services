@@ -21,4 +21,13 @@ export class RestaurantsRepository {
     });
     return restaurants;
   };
+
+  getRankings = async() => {
+    const restaruantsRanking = await this.prisma.Restaurants.findMany({
+      orderBy: {
+        restaurantTotalPrice: 'asc' // 오름차순 정렬
+      }
+    })
+    return restaruantsRanking
+  }
 }

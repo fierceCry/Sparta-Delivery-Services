@@ -37,4 +37,17 @@ export class RestaurantsController {
       data: restaurant,
     });
   };
+
+  getRankings = async (req,res)=>{
+    const restaruantsRanking = await this.restaurantsService.getRankings();
+
+    const data = restaruantsRanking.map((el) => ({
+      restaurantName: el.restaurantName,
+      restaurantAddress: el.restaurantAddress,
+      restaurantPhoneNumber: el.restaurantPhoneNumber,
+      restaurantTotalPrice: el.restaurantTotalPrice
+    }));
+
+    return res.status(HTTP_STATUS.OK).json({message: '정상적으로 조회가 완료되었습니다', data})
+  }
 }

@@ -24,4 +24,6 @@ restaurantsRouter.patch(
   restaurantsController.updateRestaurants
 );
 
+restaurantsRouter.get('/rankings',restaurantsController.getRankings);
+
 export { restaurantsRouter };
