@@ -21,4 +21,10 @@ export class RestaurantsRepository {
     });
     return restaurants;
   };
+
+  restaurantOwner = async (restaurantId) => {
+    return await this.prisma.restaurants.findUnique({
+      where: { id: +restaurantId },
+    });
+  };
 }

@@ -5,12 +5,17 @@ export class AuthRepository {
     this.prisma = prisma;
   }
 
-  findById = async (userId) => {
+  findByUserId = async (userId) => {
     return await this.prisma.user.findUnique({
       where: { id: userId },
     });
   };
 
+  findByRestaurantsId = async (userId) => {
+    return await this.prisma.restaurants.findUnique({
+      where: { id: +userId },
+    });
+  };
   findByEmail = async ({ email }) => {
     return this.prisma.users.findFirst({
       where: { email: email },
