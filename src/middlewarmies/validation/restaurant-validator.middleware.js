@@ -7,10 +7,13 @@ const schema = Joi.object({
     'any.required': '이메일을 입력해주세요.',
     'string.email': '유효한 이메일 형식이 아닙니다.',
   }),
-  bossPassword: Joi.string().required().min(MIN_PASSWORD_LENGTH).messages({
-    'any.required': '비밀번호를 입력해주세요.',
-    'string.min': `비밀번호는 최소 ${MIN_PASSWORD_LENGTH}자 이상이어야 합니다.`,
-  }),
+  bossPassword: Joi.string()
+    .required()
+    .min(MIN_PASSWORD_LENGTH)
+    .messages({
+      'any.required': '비밀번호를 입력해주세요.',
+      'string.min': `비밀번호는 최소 ${MIN_PASSWORD_LENGTH}자 이상이어야 합니다.`,
+    }),
   bossName: Joi.string().required().messages({
     'any.required': '이름을 입력해주세요.',
   }),
@@ -26,18 +29,24 @@ const schema = Joi.object({
   restaurantPhoneNumber: Joi.string().required().messages({
     'any.required': '업장 전화번호를 입력해주세요.',
   }),
-  role: Joi.string().valid(USER_ROLES.CUSTOMER, USER_ROLES.RESTAURANT).required().messages({
-    'any.required': '역할을 입력해주세요.',
-    'any.only': '유효하지 않은 역할입니다.',
-  }),
-  emailValidator: Joi.boolean().required().custom((value, helpers) => {
-    if (value === false) {
-      return helpers.message('이메일 인증이 필요합니다.');
-    }
-    return value;
-  }).messages({
-    'any.required': '이메일인증을 확인해주세요',
-  }),
+  role: Joi.string()
+    .valid(USER_ROLES.CUSTOMER, USER_ROLES.RESTAURANT)
+    .required()
+    .messages({
+      'any.required': '역할을 입력해주세요.',
+      'any.only': '유효하지 않은 역할입니다.',
+    }),
+  emailValidator: Joi.boolean()
+    .required()
+    .custom((value, helpers) => {
+      if (value === false) {
+        return helpers.message('이메일 인증이 필요합니다.');
+      }
+      return value;
+    })
+    .messages({
+      'any.required': '이메일인증을 확인해주세요',
+    }),
 });
 
 export const restaurantSignUpValidator = async (req, res, next) => {
