@@ -7,7 +7,7 @@ export class ReviewsService {
   }
 
   /* 리뷰 및 평점 생성 */
-  create = async (user, customerordersstorageId, rate, content, image) => {
+  create = async (user, customerordersstorageId, rate, content, images) => {
     const order = await this.reviewsRepository.findOrderById(
       customerordersstorageId,
       user.id
@@ -17,8 +17,14 @@ export class ReviewsService {
       throw new HttpError.NotFound('존재하지 않는 주문 정보입니다.');
     }
 
+    if (!images || !images.length === 0) {
+      throw new HttpError.BadRequest('한 장 이상의 이미지를 입력해주세요.');
+    }
+
     // 이미지 s3 업로드
-    const imageUrl = await uploadImageS3(image);
+    const imageUrl = await Promise.all(
+      images.map((image) => uploadImageS3(image))
+    );
 
     // 리뷰 생성
     const data = await this.reviewsRepository.create({
@@ -27,7 +33,7 @@ export class ReviewsService {
       customerordersstorageId,
       rate,
       content,
-      imageUrl,
+      imageUrl: JSON.stringify(imageUrl),
     });
     return data;
   };
@@ -58,19 +64,23 @@ export class ReviewsService {
   };
 
   /* 리뷰 및 평점 수정 */
-  update = async (reviewId, user, rate, content, image) => {
+  update = async (reviewId, user, rate, content, images) => {
     let data = await this.reviewsRepository.readOne(reviewId, user);
 
     if (!data) {
       throw new HttpError.NotFound('존재하지 않는 리뷰입니다.');
     }
 
-    if (!image) {
-      throw new HttpError.BadRequest('이미지를 입력해주세요');
-    }
+    //기존 이미지 불러오기
+    let imageUrl = data.imageUrl ? JSON.parse(data.imageUrl) : [];
 
     // 이미지 s3 업로드
-    const imageUrl = image ? await uploadImageS3(image) : data.imageUrl;
+    if (images && images.length > 0) {
+      const newImageUrl = await Promise.all(
+        images.map((image) => uploadImageS3(image))
+      );
+      imageUrl = imageUrl.concat(newImageUrl);
+    }
 
     // 리뷰 수정
     data = await this.reviewsRepository.update(
@@ -78,7 +88,7 @@ export class ReviewsService {
       reviewId,
       rate,
       content,
-      imageUrl
+      JSON.stringify(imageUrl)
     );
     return data;
   };

@@ -12,7 +12,7 @@ export class ReviewsController {
       const user = req.user;
       const { customerordersstorageId } = req.params;
       const { rate, content } = req.body;
-      const image = req.file; // req.file 사용
+      const images = req.files; // req.file 사용
 
       // 별표로 변환
       const starRating = getStarRating(rate);
@@ -22,7 +22,7 @@ export class ReviewsController {
         customerordersstorageId,
         starRating,
         content,
-        image
+        images
       );
 
       return res.status(HTTP_STATUS.CREATED).json({
@@ -70,7 +70,7 @@ export class ReviewsController {
       const user = req.user;
       const { reviewId } = req.params;
       const { rate, content } = req.body;
-      const image = req.file; // req.file 사용
+      const images = req.files; // req.file 사용
 
       // 별표로 변환
       const starRating = getStarRating(rate);
@@ -80,7 +80,7 @@ export class ReviewsController {
         user,
         starRating,
         content,
-        image
+        images
       );
 
       res.status(HTTP_STATUS.OK).json({

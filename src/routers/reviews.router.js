@@ -19,7 +19,7 @@ const reviewsController = new ReviewsController(reviewsService);
 reviewRouter.post(
   '/orders/:customerordersstorageId/reviews',
   authMiddleware,
-  upload.single('image'),
+  upload.array('images', 5),
   createReiveValidator,
   reviewsController.create
 );
@@ -38,7 +38,7 @@ reviewRouter.get(
 reviewRouter.patch(
   '/reviews/:reviewId',
   authMiddleware,
-  upload.single('image'),
+  upload.array('images', 5),
   updateReiveValidator,
   reviewsController.update
 );
