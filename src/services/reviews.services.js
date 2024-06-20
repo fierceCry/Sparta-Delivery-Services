@@ -9,9 +9,9 @@ export class ReviewsService {
   }
 
   /* 리뷰 및 평점 생성 */
-  create = async (user, customerordersstorageId, rate, content, images) => {
+  create = async (user, orderId, rate, content, images) => {
     const order = await this.ordersRepository.findOrderById(
-      parseInt(customerordersstorageId),
+      parseInt(orderId),
       user.id
     );
 
@@ -35,7 +35,7 @@ export class ReviewsService {
     const data = await this.reviewsRepository.create({
       userId: user.id,
       restaurantId: order.id,
-      customerordersstorageId: +customerordersstorageId,
+      orderId: +orderId,
       rate: starRating,
       content,
       imageUrl: JSON.stringify(imageUrl),

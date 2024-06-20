@@ -20,7 +20,7 @@ const reviewsController = new ReviewsController(reviewsService);
 
 /* 리뷰 및 평점 생성 */
 reviewRouter.post(
-  '/orders/:customerordersstorageId/reviews',
+  '/orders/:orderId/reviews',
   authMiddleware,
   upload.array('images', 5),
   createReiWeValidator,

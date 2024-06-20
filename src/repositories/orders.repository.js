@@ -3,11 +3,10 @@ export class OrdersRepository {
     this.prisma = prisma;
   }
 
-  // 주문 정보 불러오기
-  findOrderById = async (customerordersstorageId, userId) => {
-    const order = await this.prisma.customerOrdersStorage.findUnique({
-      where: { id: +customerordersstorageId },
-      include: { user: true, restaurant: true, food: true, order: true },
+  findOrderById = async (orderId, userId) => {
+    const order = await this.prisma.orders.findUnique({
+      where: { id: +orderId },
+      include: { users: true, restaurant: true },
     });
 
     // 주문이 존재하지 않거나, 주문이 사용자와 관계없을 때
@@ -16,32 +15,40 @@ export class OrdersRepository {
     }
     return order;
   };
+
   // 음식 상세페이지에서 주문하기 버튼으로 카트에 담고 주문테이블 생성하는 기능
   addToCart = async ({ userId, restaurantId, foodId, count }) => {
     const food = await this.prisma.foods.findUnique({
       where: {
-        id: +foodId,
-      },
+        id: +foodId
+      }
     });
     if (!food) {
-      throw new error('존재하지 않는 음식');
+      throw new error('존재하지 않는 음식')
     }
     let order = await this.prisma.orders.findFirst({
       where: {
         userId: +userId,
         restaurantId: +restaurantId,
-        state: 'CART',
-      },
+        state: 'CART'
+      }
     });
     if (!order) {
-      let order = await this.prisma.orders.create({
+      await this.prisma.orders.create({
         data: {
           userId: userId,
           restaurantId: +restaurantId,
-          state: 'CART',
-        },
+          state: 'CART'
+        }
       });
     }
+    order = await this.prisma.orders.findFirst({
+      where: {
+        userId: +userId,
+        restaurantId: +restaurantId,
+        state: 'CART'
+      }
+    });
     const cartItems = await this.prisma.customerOrdersStorage.create({
       data: {
         foodPrice: food.price,
@@ -49,27 +56,27 @@ export class OrdersRepository {
         orderPrice: food.price * +count,
         order: {
           connect: {
-            id: order.id,
-          },
+            id: order.id
+          }
         },
         food: {
           connect: {
-            id: +foodId,
-          },
+            id: +foodId
+          }
         },
         user: {
           connect: {
-            id: userId,
-          },
+            id: userId
+          }
         },
         restaurant: {
           connect: {
-            id: +restaurantId,
-          },
-        },
-      },
+            id: +restaurantId
+          }
+        }
+      }
     });
-  };
+  }
 
   // 카트에 담긴 상품을 주문하기를 눌렀을때 기능
 

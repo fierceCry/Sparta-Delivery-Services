@@ -9,13 +9,13 @@ export class ReviewsController {
   create = async (req, res, next) => {
     try {
       const user = req.user;
-      const { customerordersstorageId } = req.params;
+      const { orderId } = req.params;
       const { rate, content } = req.body;
       const images = req.files;
 
       const data = await this.reviewsService.create(
         user,
-        customerordersstorageId,
+        orderId,
         rate,
         content,
         images

@@ -3,10 +3,26 @@ export class ReviewsRepository {
     this.prisma = prisma;
   }
   /* 리뷰 및 평점 생성 */
+
+  /*주문 조회*/
+  // findOrderById = async (orderId, userId) => {
+  //   const order = await this.prisma.orders.findUnique({
+  //     where: { id: +orderId },
+  //     include: { users: true, restaurants: true },
+  //   });
+
+    // 주문이 존재하지 않거나, 주문이 사용자와 관계없을 때
+  //   if (!order || order.userId !== userId) {
+  //     return null;
+  //   }
+  //   return order;
+  // };
+
+  /*리뷰 생성*/
   create = async ({
     userId,
     restaurantId,
-    customerordersstorageId,
+    orderId,
     rate,
     content,
     imageUrl,
@@ -15,7 +31,7 @@ export class ReviewsRepository {
       data: {
         userId,
         restaurantId,
-        customerordersstorageId: +customerordersstorageId,
+        orderId,
         rate,
         content,
         imageUrl: JSON.stringify(imageUrl),
