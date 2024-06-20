@@ -20,7 +20,7 @@ export class OrdersRepository {
             }
         });
         if (!order) {
-            let order = await this.prisma.orders.create({
+            await this.prisma.orders.create({
                 data: {
                     userId: userId,
                     restaurantId: +restaurantId,
@@ -28,6 +28,13 @@ export class OrdersRepository {
                 }
             });
         }
+        order = await this.prisma.orders.findFirst({
+            where: {
+                userId: +userId,
+                restaurantId: +restaurantId,
+                state: 'CART'
+            }
+        });
         const cartItems = await this.prisma.customerOrdersStorage.create({
             data: {
                 foodPrice: food.price,
