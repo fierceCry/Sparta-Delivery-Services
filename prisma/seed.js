@@ -67,20 +67,18 @@ async function main() {
   const foods1 = await prisma.foods.create({
     data: {
       restaurantId: restaurant1.id,
-      name: "치킨 햄버거",
+      name: '양념치킨 햄버거',
       price: 1,
-      imageUrl: {data : "https://google.com"},
-    }
-
-  })
+      imageUrl: { data: 'https://google.com' },
+    },
+  });
 
   const foods2 = await prisma.foods.create({
     data: {
-
       restaurantId: restaurant1.id,
       name: "햄버거 앙념피자",
       price: 2,
-      imageUrl: {data : "https://google.com"},
+      imageUrl: { data: "https://google.com" },
     }
   })
 
@@ -90,7 +88,7 @@ async function main() {
       restaurantId: restaurant1.id,
       name: "맛있는 타코야끼",
       price: 2,
-      imageUrl: {data : "https://google.com"},
+      imageUrl: { data: "https://google.com" },
     }
   })
 
@@ -100,7 +98,7 @@ async function main() {
       restaurantId: restaurant2.id,
       name: "연어 초밥들",
       price: 2,
-      imageUrl: {data : "https://google.com"},
+      imageUrl: { data: "https://google.com" },
     }
   })
 
@@ -110,11 +108,81 @@ async function main() {
       restaurantId: restaurant2.id,
       name: "연어의 롤",
       price: 2,
-      imageUrl: {data : "https://google.com"},
-    }
-  })
+      imageUrl: { data: 'https://google.com' },
+    },
+  });
 
-  console.log({ user1, user2, restaurant1, restaurant2, foods1, foods2 });
+  const order1 = await prisma.orders.create({
+    data: {
+      userId: user1.id,
+      restaurantId: restaurant1.id,
+      state: 'DELIVERED',
+    },
+  });
+
+  const order2 = await prisma.orders.create({
+    data: {
+      userId: user2.id,
+      restaurantId: restaurant2.id,
+      state: 'DELIVERED',
+    },
+  });
+
+  const review1 = await prisma.reviews.create({
+    data: {
+      rate: "ONE",
+      content: "별로에요",
+      imageUrl: JSON.stringify(["https://google.com"]), // JSON 형식으로 변환
+      users: {
+        connect: {
+          id: user1.id // 올바른 필드명 사용
+        }
+      },
+      restaurants: {
+        connect: {
+          id: restaurant1.id // 올바른 필드명 사용
+        }
+      },
+      orders: {
+        connect: {
+          id: order1.id // 올바른 필드명 사용
+        }
+      }
+    }
+  });
+  const review2 = await prisma.reviews.create({
+    data: {
+      rate: "ONE",
+      content: "별로에요",
+      imageUrl: JSON.stringify(["https://google.com"]), // JSON 형식으로 변환
+      users: {
+        connect: {
+          id: user2.id // 올바른 필드명 사용
+        }
+      },
+      restaurants: {
+        connect: {
+          id: restaurant2.id // 올바른 필드명 사용
+        }
+      },
+      orders: {
+        connect: {
+          id: order2.id // 올바른 필드명 사용
+        }
+      }
+    }
+  });
+
+  console.log({
+    user1,
+    user2,
+    restaurant1,
+    restaurant2,
+    foods1,
+    foods2,
+    review1,
+    review2,
+  });
 }
 
 main()

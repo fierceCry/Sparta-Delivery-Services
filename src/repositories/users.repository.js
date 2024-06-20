@@ -1,4 +1,5 @@
 import { USER_ROLES } from '../constants/auth.constants.js';
+import { prisma } from '../utils/utils.prisma.js';
 
 export class UserRepository {
   constructor(prisma) {
@@ -23,7 +24,6 @@ export class UserRepository {
   };
 
   updateUser = async (id, name, nickname, phoneNumber, address) => {
-    console.log(id);
     const user = await this.prisma.Users.update({
       where: { id: +id },
       data: {

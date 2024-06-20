@@ -1,25 +1,24 @@
-import { getStarRating } from '../constants/review.constants.js';
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
+
 export class ReviewsController {
   constructor(reviewsService) {
     this.reviewsService = reviewsService;
   }
+
   /* 리뷰 및 평점 생성 */
   create = async (req, res, next) => {
     try {
       const user = req.user;
       const { customerordersstorageId } = req.params;
-      const { rate, content, imageUrl } = req.body;
-
-      // 별표로 변환
-      const starRating = getStarRating(rate);
+      const { rate, content } = req.body;
+      const images = req.files;
 
       const data = await this.reviewsService.create(
         user,
         customerordersstorageId,
-        starRating,
+        rate,
         content,
-        imageUrl
+        images
       );
 
       return res.status(HTTP_STATUS.CREATED).json({
@@ -52,7 +51,7 @@ export class ReviewsController {
       const user = req.user;
       const { reviewId } = req.params;
 
-      //리뷰 조회
+      // 리뷰 조회
       const data = await this.reviewsService.readOne(user, reviewId);
 
       res.status(HTTP_STATUS.OK).json({ status: HTTP_STATUS.OK, data });
@@ -66,18 +65,23 @@ export class ReviewsController {
     try {
       const user = req.user;
       const { reviewId } = req.params;
-      const { rate, content, imageUrl } = req.body;
+      const { rate, content } = req.body;
+      let deleteImages = req.body.deleteImages;
+      const images = req.files;
 
-      // 별표로 변환
-      const starRating = getStarRating(rate);
+      // deleteImages가 배열인지 확인, 아니라면 배열로 반환
+      if (deleteImages && !Array.isArray(deleteImages)) {
+        deleteImages = [deleteImages];
+      }
 
-      const data = await this.reviewsService.update(
+      const data = await this.reviewsService.update({
         reviewId,
         user,
-        starRating,
+        rate,
         content,
-        imageUrl
-      );
+        images,
+        deleteImages,
+      });
 
       res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,

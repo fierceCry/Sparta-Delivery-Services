@@ -1,15 +1,20 @@
-import { HTTP_STATUS } from '../constants/http-status.constant.js';
-import { prisma } from '../utils/utils.prisma.js';
+import { HttpError } from '../errors/http.error.js';
 
 export class FoodsRepository {
   constructor(prisma) {
     this.prisma = prisma;
   }
 
-  create = async (data) => {
-    return await this.prisma.foods.create({
-      data,
+  create = async ({ restaurantId, name, price, imageUrl }) => {
+    const data = await this.prisma.foods.create({
+      data: {
+        restaurantId,
+        name,
+        price,
+        imageUrl,
+      },
     });
+    return data;
   };
 
   findManyByRestaurant = async (restaurantId) => {
@@ -18,39 +23,16 @@ export class FoodsRepository {
     });
   };
 
-  //   findOne = async (restaurantId, foodId) => {
-  //     return await this.prisma.foods.findUnique({
-  //       where: {
-  //         id_restaurantId: {
-  //           id: foodId,
-  //           restaurantId,
-  //         },
-  //       },
-  //     });
-  //   };
-
-  update = async (restaurantId, id, data) => {
-    // 레코드가 존재하는지 확인
-    const food = await this.prisma.foods.findUnique({
-      where: {
-        id_restaurantId: {
-          id: parseInt(id, 10),
-          restaurantId: parseInt(restaurantId, 10),
-        },
-      },
+  findUnique = async ({ where }) => {
+    return await this.prisma.foods.findUnique({
+      where: where,
     });
+  };
 
-    if (!food) {
-      throw new Error('없는 음식입니다.');
-    }
+  update = async ({ where, data }) => {
     return await this.prisma.foods.update({
-      where: {
-        id_restaurantId: {
-          id: parseInt(id, 10),
-          restaurantId: parseInt(restaurantId, 10),
-        },
-      },
-      data,
+      where: where,
+      data: data,
     });
   };
 
@@ -66,7 +48,7 @@ export class FoodsRepository {
     });
 
     if (!food) {
-      throw new Error('없는 음식입니다');
+      throw new HttpError.NotFound('없는 음식입니다');
     }
     return await this.prisma.foods.delete({
       where: {

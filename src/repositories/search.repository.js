@@ -13,7 +13,6 @@ export class SearchRepository {
                 }
             }
         });
-        console.log({ data, findAtFoods });
 
         // 음식에서 검색된 레스토랑 ID 목록
         let restaurantIdsFromFoods = findAtFoods.map(food => food.restaurantId);
@@ -41,7 +40,6 @@ export class SearchRepository {
                 ]
             }
         });
-        console.log(findAtRestaurants);
         // 레스토랑에서 검색된 레스토랑 ID 목록
         let restaurantIdsFromRestaurants = findAtRestaurants.map(restaurant => restaurant.id);
 
@@ -66,7 +64,6 @@ export class SearchRepository {
             })
             : [];
 
-        console.log(restaurants);
         return restaurants;
     }
 }
