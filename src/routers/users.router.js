@@ -5,7 +5,7 @@ import { UserRepository } from '../repositories/users.repository.js';
 import { authMiddleware } from '../middlewarmies/require-access-token.middleware.js';
 import { usersUpdateValidator } from '../middlewarmies/validation/users-update-validator.middleware.js';
 import { prisma } from '../utils/utils.prisma.js';
-
+import { refreshTokenMiddleware} from '../middlewarmies/require-refresh-token.middleware.js';
 const usersRouter = express.Router();
 
 const userRepository = new UserRepository(prisma);
@@ -19,5 +19,5 @@ usersRouter.patch(
   usersUpdateValidator,
   userController.updateUser
 );
-
+usersRouter.post('/sign-out', refreshTokenMiddleware, userController.logOut)
 export { usersRouter };

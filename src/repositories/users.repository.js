@@ -1,24 +1,24 @@
 import { USER_ROLES } from '../constants/auth.constants.js';
-import { prisma } from '../utils/utils.prisma.js';
 
 export class UserRepository {
   constructor(prisma) {
     this.prisma = prisma;
   }
+  
   findByToken = async (id) => {
-    return await prisma.refreshToken.findUnique({
+    return await this.prisma.refreshToken.findUnique({
       where: { userId: id },
     });
   };
 
-  findByIdAndRole = async (userId, role) => {
+  findByIdAndRole = async ({id, role}) => {
     if (role === USER_ROLES.CUSTOMER) {
       return await this.prisma.users.findUnique({
-        where: { id: userId },
+        where: { id: id },
       });
     } else if (role === USER_ROLES.RESTAURANT) {
       return await this.prisma.restaurants.findUnique({
-        where: { id: userId },
+        where: { id: id },
       });
     }
   };
@@ -36,4 +36,15 @@ export class UserRepository {
     });
     return user;
   };
+  logOut = async(id, role)=>{
+    if (role === USER_ROLES.CUSTOMER) {
+      return this.prisma.users.delete({
+        where: { id },
+      });
+    } else if (role === USER_ROLES.RESTAURANT) {
+      return this.prisma.restaurants.delete({
+        where: { id: id },
+      });
+    }
+  }
 }

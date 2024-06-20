@@ -31,4 +31,16 @@ export class UserController {
       .status(HTTP_STATUS.CREATED)
       .json({ message: '정상적으로 정보수정이 완료되었습니다.', data });
   };
+
+  logOut = async (req, res, next) => {
+    try {
+      const { id, role } = req.user;
+      await this.userService.logOut(id, role);
+      return res
+        .status(HTTP_STATUS.OK)
+        .json({ message: '정상적으로 회원탈퇴 되었습니다.' });
+    } catch (error) {
+      next(error);
+    }
+  };
 }

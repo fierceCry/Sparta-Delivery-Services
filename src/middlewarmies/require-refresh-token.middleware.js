@@ -2,7 +2,6 @@ import bcrypt from 'bcrypt';
 import { prisma } from '../utils/utils.prisma.js';
 import { ENV_KEY } from '../constants/env.constants.js';
 import { validateToken } from './require-access-token.middleware.js';
-import { MESSAGES } from '../constants/message.constant.js';
 import { HttpError } from '../errors/http.error.js';
 import { UserRepository } from '../repositories/users.repository.js';
 
@@ -38,12 +37,13 @@ const refreshTokenMiddleware = async (req, res, next) => {
     if (!isValid) {
       throw new HttpError.BadRequest('폐기 된 인증 정보입니다.');
     }
-
-    const user = await userRepository.findByIdAndRole(payload.id, payload.role);
+    console.log(payload)
+    const {id, role } = payload;
+    const user = await userRepository.findByIdAndRole({id, role});
     if (!user) {
       throw new HttpError.NotFound('인증 정보와 일치하는 사용자가 없습니다.');
     }
-
+    console.log(user)
     req.user = user;
     next();
   } catch (error) {

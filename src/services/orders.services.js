@@ -1,3 +1,9 @@
+import {
+  notifyNewOrder,
+  notifyDeliveryCompleted,
+  notifyOrderConfirmed,
+} from '../utils/socket.js';
+import { HttpError } from '../errors/http.error.js';
 export class OrdersService {
   constructor(ordersRepository) {
     this.ordersRepository = ordersRepository;
@@ -13,10 +19,13 @@ export class OrdersService {
   };
 
   createOrderFromCart = async ({ userId, restaurantId }) => {
-    return await this.ordersRepository.createOrderFromCart({
+    const data = await this.ordersRepository.createOrderFromCart({
       userId,
       restaurantId,
     });
+    const result = await this.ordersRepository.findById(data.id)
+    await notifyNewOrder(userId, restaurantId, result.id);
+    return;
   };
 
   confirmOrder = async ({ restaurantId, orderId }) => {
@@ -29,17 +38,37 @@ export class OrdersService {
 
   deliveryOrder = async ({ restaurantId, orderId }) => {
     const deliveryOrder = await this.ordersRepository.deliveryOrder({
-      restaurantId,
-      orderId,
-    });
-    return deliveryOrder;
-  };
+        restaurantId,
+        orderId,
+      });
+  
+      if (!deliveryOrder) {
+        throw new HttpError.NotFound(`해당하는 주문을 찾을 수 없습니다.`);
+      }
 
-  deliveryComplete = async ({ restaurantId, orderId }) => {
-    const deliveryComplete = await this.ordersRepository.deliveryComplete({
-      restaurantId,
-      orderId,
-    });
-    return deliveryComplete;
-  };
+      // 업데이트된 주문 정보를 가져오기
+      const result = await this.ordersRepository.findById(deliveryOrder.id);
+
+      // 알림 보내기
+      await notifyOrderConfirmed(restaurantId, orderId, result.id, result.userId);
+  
+      return deliveryOrder;
+    }
+
+    deliveryComplete = async ({ restaurantId, orderId }) => {
+      const deliveryComplete = await this.ordersRepository.deliveryComplete({
+        restaurantId,
+        orderId,
+      });
+
+      if (!deliveryComplete) {
+        throw new HttpError.NotFound(`해당하는 주문을 찾을 수 없습니다.`);
+      }
+        
+      const result = await this.ordersRepository.findById(deliveryComplete.id);
+          
+      await notifyDeliveryCompleted(restaurantId, orderId, result.id, result.userId);
+    
+      return deliveryComplete;
+    };
 }

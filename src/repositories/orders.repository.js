@@ -1,3 +1,5 @@
+import { HttpError } from "../errors/http.error.js";
+
 export class OrdersRepository {
   constructor(prisma) {
     this.prisma = prisma;
@@ -11,7 +13,7 @@ export class OrdersRepository {
             }
         });
         if (!food) {
-            throw new error('존재하지 않는 음식')
+            throw new HttpError.NotFound('존재하지 않는 음식')
         }
         let order = await this.prisma.orders.findFirst({
             where: {
@@ -68,86 +70,81 @@ export class OrdersRepository {
   // 카트에 담긴 상품을 주문하기를 눌렀을때 기능
 
   createOrderFromCart = async ({ userId, restaurantId }) => {
-    return this.prisma.$transaction(async (tx) => {
+    return await this.prisma.$transaction(async (tx) => {
       // 1. 카트 가져오기
       const order = await tx.orders.findFirst({
         where: {
           userId: userId,
           restaurantId: +restaurantId,
-          state: 'CART',
-        },
+          state: 'CART'
+        }
       });
-
+  
       if (!order) {
         throw new Error('No cart found');
       }
-
+  
       const cart = await tx.customerOrdersStorage.findMany({
         where: {
-          ordersId: order.id,
-        },
+          ordersId: order.id
+        }
       });
-
+  
       if (!cart || cart.length === 0) {
         throw new Error('Cart is empty');
       }
+  
       // 2. 주문상태로 변경하고 결제 처리하기
       const userPoints = await tx.users.findUnique({
         where: {
-          id: userId,
+          id: userId
         },
         select: {
-          points: true,
-        },
+          points: true
+        }
       });
+  
       let cartsPrice = await tx.customerOrdersStorage.findMany({
         where: {
-          ordersId: order.id,
+          ordersId: order.id
         },
         select: {
-          orderPrice: true,
-        },
+          orderPrice: true
+        }
       });
-      cartsPrice = cartsPrice.map((price) => price.orderPrice);
+  
+      cartsPrice = cartsPrice.map(price => price.orderPrice);
       let totalPrice = 0;
-      await cartsPrice.forEach((price) => {
+      cartsPrice.forEach(price => {
         totalPrice += price;
       });
+  
       if (totalPrice > userPoints.points) {
-        throw new error('보유잔액이 모자랍니다.');
+        throw new Error('보유잔액이 모자랍니다.');
       }
-      await tx.orders.update({
+  
+      const updateOrder = await tx.orders.update({
         where: {
-          id: order.id,
+          id: order.id
         },
         data: {
-          state: 'PENDING',
-        },
+          state: 'PENDING'
+        }
       });
-      const findRestaruantsTotalPrice = await tx.restaurants.findFirst({
-        where: { id: +restaurantId },
-        select: {
-          restaurantTotalPrice: true,
-        },
-      });
-      const updateRestaurantTotalPrice = await tx.restaurants.update({
-        where: { id: +restaurantId },
-        data: {
-          restaurantTotalPrice:
-            findRestaruantsTotalPrice.restaurantTotalPrice + totalPrice,
-        },
-      });
+  
       await tx.users.update({
         where: {
-          id: userId,
+          id: userId
         },
         data: {
-          points: userPoints.points - totalPrice,
-        },
+          points: userPoints.points - totalPrice
+        }
       });
+  
+      return updateOrder; // 반환할 값을 명시적으로 지정
     });
-  };
-
+  }
+  
   confirmOrder = async ({ restaurantId, orderId }) => {
     const confirmOrder = await this.prisma.orders.update({
       where: {
@@ -160,8 +157,9 @@ export class OrdersRepository {
       },
     });
   };
+  
   deliveryOrder = async ({ restaurantId, orderId }) => {
-    const deliveryOrder = await this.prisma.orders.update({
+    return await this.prisma.orders.update({
       where: {
         id: +orderId,
         restaurantId: restaurantId,
@@ -174,7 +172,7 @@ export class OrdersRepository {
   };
 
   deliveryComplete = async ({ restaurantId, orderId }) => {
-    const deliveryComplete = await this.prisma.orders.update({
+    return await this.prisma.orders.update({
       where: {
         id: +orderId,
         restaurantId: restaurantId,
@@ -185,4 +183,10 @@ export class OrdersRepository {
       },
     });
   };
+
+  findById = async(id)=>{
+    return await this.prisma.customerOrdersStorage.findFirst({
+        where: {ordersId: +id}
+    })
+  }
 }

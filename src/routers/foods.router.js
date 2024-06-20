@@ -15,7 +15,7 @@ const foodsService = new FoodsService(foodsRepository);
 const foodsController = new FoodsController(foodsService);
 
 foodsRouter.post(
-  '/:restaurantId/foods',
+  '/foods',
   authMiddleware,
   upload.array('images', 10),
   postFoodValidator,
@@ -25,7 +25,7 @@ foodsRouter.post(
 foodsRouter.get('/:restaurantId/foods', foodsController.readMany);
 
 foodsRouter.patch(
-  '/:restaurantId/foods/:foodId',
+  '/foods/:foodId',
   authMiddleware,
   upload.array('images', 10),
   postFoodValidator,
@@ -33,7 +33,7 @@ foodsRouter.patch(
 );
 
 foodsRouter.delete(
-  '/:restaurantId/foods/:foodId',
+  '/foods/:foodId',
   authMiddleware,
   foodsController.delete
 );
