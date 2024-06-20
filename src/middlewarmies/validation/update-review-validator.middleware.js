@@ -6,10 +6,12 @@ const schema = Joi.object({
     .valid(...Object.values(Rating))
     .optional(),
   content: Joi.string().optional(),
-  imageUrl: Joi.string().optional().uri(),
+  deleteImages: Joi.alternatives()
+    .try(Joi.array().items(Joi.string().uri()), Joi.string().uri())
+    .optional(),
 });
 
-export const updateReiveValidator = async (req, res, next) => {
+export const updateReiWeValidator = async (req, res, next) => {
   try {
     await schema.validateAsync(req.body);
     next();
