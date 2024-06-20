@@ -1,5 +1,4 @@
 import AWS from 'aws-sdk';
-import 'dotenv/config';
 import { ENV_KEY } from './src/constants/env.constants.js';
 
 AWS.config.update({
