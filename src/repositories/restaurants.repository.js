@@ -1,3 +1,5 @@
+import { getSort } from '../constants/restaurants.constants.js';
+
 export class RestaurantsRepository {
   constructor(prisma) {
     this.prisma = prisma;
@@ -27,12 +29,16 @@ export class RestaurantsRepository {
     return restaurants;
   };
 
-  getRankings = async () => {
-    const restaruantsRanking = await this.prisma.Restaurants.findMany({
-      orderBy: {
-        restaurantTotalPrice: 'desc', // 오름차순 정렬
-      },
-    });
-    return restaruantsRanking;
+  getRankings = async (sortToLower) => {
+    if (getSort(sortToLower)) {
+      const restaruantsRanking = await this.prisma.Restaurants.findMany({
+        orderBy: {
+          [getSort(sortToLower)]: 'desc',
+        },
+      });
+      return restaruantsRanking;
+    } else {
+      throw new Error(`Unsupported sorting option: ${sortToLower}`);
+    }
   };
 }

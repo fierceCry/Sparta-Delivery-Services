@@ -28,8 +28,10 @@ export class RestaurantsService {
     };
   };
 
-  getRankings = async () => {
-    const restaruantsRanking = await this.restaurantsRepository.getRankings();
+  getRankings = async (sort) => {
+    const sortToLower = sort.toLowerCase();
+    const restaruantsRanking =
+      await this.restaurantsRepository.getRankings(sortToLower);
 
     const data = restaruantsRanking.map((el) => ({
       restaurantName: el.restaurantName,

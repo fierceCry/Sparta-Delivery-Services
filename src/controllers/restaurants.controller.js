@@ -53,7 +53,9 @@ export class RestaurantsController {
   };
 
   getRankings = async (req, res) => {
-    const data = await this.restaurantsService.getRankings();
+    const { sort = 'totalprice' } = req.body;
+
+    const data = await this.restaurantsService.getRankings(sort);
 
     return res
       .status(HTTP_STATUS.OK)
