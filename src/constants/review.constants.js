@@ -15,5 +15,16 @@ export const Rating = {
 };
 
 export function getStarRating(rating) {
-  return REVIEW_RATE[rating];
+  switch (rating) {
+    case 'ONE':
+      return Rating.ONE;
+    case 'TWO':
+      return Rating.TWO;
+    case 'THREE':
+      return Rating.THREE;
+    case 'FOUR':
+      return Rating.FOUR;
+    case 'FIVE':
+      return Rating.FIVE;
+  }
 }

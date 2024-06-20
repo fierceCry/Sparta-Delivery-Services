@@ -67,24 +67,52 @@ async function main() {
   const foods1 = await prisma.foods.create({
     data: {
       restaurantId: restaurant1.id,
-      name: "양념치킨 햄버거",
+      name: '양념치킨 햄버거',
       price: 1,
-      imageUrl: {data : "https://google.com"},
-    }
-
-  })
+      imageUrl: { data: 'https://google.com' },
+    },
+  });
 
   const foods2 = await prisma.foods.create({
     data: {
-
       restaurantId: restaurant1.id,
-      name: "햄버거 피자",
+      name: '햄버거 피자',
       price: 2,
-      imageUrl: {data : "https://google.com"},
-    }
-  })
+      imageUrl: { data: 'https://google.com' },
+    },
+  });
 
-  console.log({ user1, user2, restaurant1, restaurant2, foods1, foods2 });
+  const review1 = await prisma.reviews.create({
+    data: {
+      userId: user1.id,
+      restaurantId: restaurant1.id,
+      customerordersstorageId: order1.id,
+      rate: 'ONE',
+      content: '별로에요',
+      imageUrl: JSON.stringify(['https://google.com']),
+    },
+  });
+  const review2 = await prisma.reviews.create({
+    data: {
+      userId: user2.id,
+      restaurantId: restaurant2.id,
+      customerordersstorageId: order2.id,
+      rate: 'ONE',
+      content: '별로에요',
+      imageUrl: JSON.stringify(['https://google.com']),
+    },
+  });
+
+  console.log({
+    user1,
+    user2,
+    restaurant1,
+    restaurant2,
+    foods1,
+    foods2,
+    review1,
+    review2,
+  });
 }
 
 main()

@@ -2,6 +2,12 @@ export class RestaurantsService {
   constructor(restaurantsRepository) {
     this.restaurantsRepository = restaurantsRepository;
   }
+  getAllRestaurants = async () => {
+    const data = await this.restaurantsRepository.getAllRestaurants();
+
+    return data;
+  };
+
   updateRestaurants = async (
     id,
     restaurantName,
@@ -20,5 +26,17 @@ export class RestaurantsService {
       ...restaurants,
       bossPassword: undefined,
     };
+  };
+
+  getRankings = async () => {
+    const restaruantsRanking = await this.restaurantsRepository.getRankings();
+
+    const data = restaruantsRanking.map((el) => ({
+      restaurantName: el.restaurantName,
+      restaurantAddress: el.restaurantAddress,
+      restaurantPhoneNumber: el.restaurantPhoneNumber,
+      restaurantTotalPrice: el.restaurantTotalPrice,
+    }));
+    return data;
   };
 }
