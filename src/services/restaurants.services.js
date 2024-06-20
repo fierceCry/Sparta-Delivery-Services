@@ -38,6 +38,7 @@ export class RestaurantsService {
       restaurantAddress: el.restaurantAddress,
       restaurantPhoneNumber: el.restaurantPhoneNumber,
       restaurantTotalPrice: el.restaurantTotalPrice,
+      restaurantRatingAvg: el.restaurantRatingAvg,
     }));
     return data;
   };
