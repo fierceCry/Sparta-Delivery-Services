@@ -27,7 +27,7 @@ export class AuthController {
       });
 
       return res
-        .status(HTTP_STATUS.OK)
+        .status(HTTP_STATUS.CREATED)
         .json({ message: '고객 회원가입이 완료되었습니다.', data: userData });
     } catch (error) {
       next(error);

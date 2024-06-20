@@ -1,4 +1,5 @@
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
+import { HttpError } from '../errors/http.error.js';
 
 export class RestaurantsController {
   constructor(restaurantsService) {
@@ -8,7 +9,7 @@ export class RestaurantsController {
     try {
       const data = await this.restaurantsService.getAllRestaurants();
       if (!data) {
-        throw new Error('데이터가 존재하지않습니다.');
+        throw new HttpError.NotFound('데이터가 존재하지않습니다.');
       }
       return res
         .status(HTTP_STATUS.OK)

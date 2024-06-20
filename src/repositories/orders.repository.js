@@ -1,3 +1,5 @@
+import { HttpError } from "../errors/http.error.js";
+
 export class OrdersRepository {
   constructor(prisma) {
     this.prisma = prisma;
@@ -11,7 +13,7 @@ export class OrdersRepository {
             }
         });
         if (!food) {
-            throw new error('존재하지 않는 음식')
+            throw new HttpError.NotFound('존재하지 않는 음식')
         }
         let order = await this.prisma.orders.findFirst({
             where: {

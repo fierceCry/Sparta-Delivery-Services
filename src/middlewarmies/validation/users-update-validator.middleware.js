@@ -17,6 +17,7 @@ const schema = Joi.object({
 
 export const usersUpdateValidator = async (req, res, next) => {
   try {
+    console.log(req.body)
     await schema.validateAsync(req.body);
     next();
   } catch (error) {
