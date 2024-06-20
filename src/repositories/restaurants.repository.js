@@ -1,4 +1,4 @@
-import { getSort } from '../constants/restaurants.constants.js';
+import { getSort, RANKINGLIMIT } from '../constants/restaurants.constants.js';
 
 export class RestaurantsRepository {
   constructor(prisma) {
@@ -29,12 +29,13 @@ export class RestaurantsRepository {
     return restaurants;
   };
 
-  getRankings = async (sortToLower) => {
+  getRankings = async (sortToLower, limit = RANKINGLIMIT) => {
     if (getSort(sortToLower)) {
       const restaruantsRanking = await this.prisma.Restaurants.findMany({
         orderBy: {
           [getSort(sortToLower)]: 'desc',
         },
+        take: limit,
       });
       return restaruantsRanking;
     } else {

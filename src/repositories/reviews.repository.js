@@ -37,6 +37,28 @@ export class ReviewsRepository {
         imageUrl,
       },
     });
+    //전수원 24-06-20 추가
+    const findRate = await this.prisma.reviews.findMany({
+      where: { restaurantId },
+      select: {
+        rate: true,
+      },
+    });
+
+    const reviewsRate = await findRate.map((el) => el.rate);
+    let totalRate = 0;
+    const reviewsTotalRate = await reviewsRate.forEach((rate) => {
+      totalRate += rate;
+    });
+    const reviewsAvgRate = reviewsTotalRate / (reviewsRate.length - 1);
+
+    await this.prisma.restaurants.update({
+      where: { restaurantId },
+      data: {
+        restaurantRatingAvg: reviewsAvgRate,
+      },
+    });
+    //전수원 24-06-20 추가
     return data;
   };
 
