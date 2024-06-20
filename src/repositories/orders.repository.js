@@ -5,11 +5,11 @@ export class OrdersRepository {
     this.prisma = prisma;
   }
 
-  // 주문 정보 불러오기
-  findOrderById = async (customerordersstorageId, userId) => {
-    const order = await this.prisma.customerOrdersStorage.findUnique({
-      where: { id: +customerordersstorageId },
-      include: { user: true, restaurant: true, food: true, order: true },
+  /*주문 조회*/
+  findOrderById = async (orderId, userId) => {
+    const order = await this.prisma.orders.findUnique({
+      where: { id: +orderId },
+      include: { users: true, restaurants: true },
     });
 
     // 주문이 존재하지 않거나, 주문이 사용자와 관계없을 때
@@ -18,6 +18,7 @@ export class OrdersRepository {
     }
     return order;
   };
+
   // 음식 상세페이지에서 주문하기 버튼으로 카트에 담고 주문테이블 생성하는 기능
   addToCart = async ({ userId, restaurantId, foodId, count }) => {
     const food = await this.prisma.foods.findUnique({
