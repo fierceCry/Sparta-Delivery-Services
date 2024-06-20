@@ -28,3 +28,15 @@ export function getStarRating(rating) {
       return Rating.FIVE;
   }
 }
+//전수원추가 24-06-20
+export const NumRating = {
+  ONE: 1,
+  TWO: 2,
+  THREE: 3,
+  FOUR: 4,
+  FIVE: 5,
+};
+
+export const getNumRating = (rating) => {
+  return NumRating[rating];
+};
