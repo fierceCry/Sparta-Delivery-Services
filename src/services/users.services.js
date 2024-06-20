@@ -12,4 +12,8 @@ export class UserService {
     );
     return { ...user, password: undefined };
   };
+
+  logOut = async(id, role)=>{
+    return await this.userRepository.logOut(id, role)
+  }
 }

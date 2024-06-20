@@ -109,10 +109,10 @@ export class AuthService {
       throw new HttpError.Unauthorized('인증정보가 유효하지 않습니다.');
     }
 
-    const accessToken = this.generateTokens(user.id, role);
-    await this.authRepository.token(user.id, accessToken.refreshToken);
+    const {accessToken, refreshToken, hashRefreshToken} = this.generateTokens(user.id, role);
+    await this.authRepository.token(user.id, hashRefreshToken);
 
-    return accessToken;
+    return {accessToken, refreshToken};
   }
 
   generateTokens(userId, role) {
@@ -131,8 +131,8 @@ export class AuthService {
         expiresIn: REFRESH_TOKEN_EXPIRES_IN,
       }
     );
-
-    return { accessToken, refreshToken };
+    const hashRefreshToken = bcrypt.hashSync(refreshToken, HASH_SALT_ROUNDS)
+    return { accessToken, refreshToken, hashRefreshToken };
   }
 
   async sendVerificationEmail({ email, role }) {

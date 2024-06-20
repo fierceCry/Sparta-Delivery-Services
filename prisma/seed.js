@@ -180,8 +180,8 @@ async function main() {
     restaurant2,
     foods1,
     foods2,
-    // review1,
-    // review2,
+    review1,
+    review2,
   });
 }
 

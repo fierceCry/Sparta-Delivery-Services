@@ -1,12 +1,10 @@
 import { WebSocketServer } from 'ws';
 import { prisma } from './utils.prisma.js';
 import { NotificationRepository } from '../repositories/notifications.repository.js';
-import { RestaurantsRepository } from '../repositories/restaurants.repository.js';
 import { authMiddleware } from '../middlewarmies/require-access-token.middleware.js';
 import { AuthRepository } from '../repositories/auth.repository.js';
 
 const notificationRepository = new NotificationRepository(prisma);
-const restaurantsRepository = new RestaurantsRepository(prisma);
 const authRepository = new AuthRepository(prisma);
 
 const customerConnections = new Map();
@@ -31,7 +29,7 @@ const handleConnection = async (ws, req) => {
 
       const user = req.user;
       if (user.email) {
-        addConnection(customerConnections, user.id, ws);
+        addConnection(customerConnections, user.email, ws);
       } else if (user.bossEmail) {
         addConnection(restaurantOwnerConnections, user.bossEmail, ws);
       } else {
@@ -63,21 +61,7 @@ const handleDisconnection = (user) => {
   }
 };
 
-const handleMessage = async (message, ws) => {
-  try {
-    console.log(`Received message => ${message}`);
-    const parsedMessage = JSON.parse(message);
-
-    if (parsedMessage.type === 'new_order') {
-      await notifyNewOrder(parsedMessage.data);
-    } else if (parsedMessage.type === 'delivery_completed') {
-      await notifyDeliveryCompleted(parsedMessage.data);
-    }
-  } catch (error) {
-    console.error('Error processing message:', error);
-  }
-};
-
+// 웹소켓에서 사장 조회
 const findRestaurantOwnerWebSocket = async (restaurantId) => {
   const data = await authRepository.findByRestaurantsId(restaurantId);
   if (restaurantOwnerConnections.has(data.bossEmail)) {
@@ -85,45 +69,81 @@ const findRestaurantOwnerWebSocket = async (restaurantId) => {
   }
   return null;
 };
+// 웹소켓에서 고객 조회
+const findUsersOwnerWebSocket = async (userId) => {
+  const data = await authRepository.findByUserId(userId);
+  if (customerConnections.has(data.email)) {
+    return customerConnections.get(data.email);
+  }
+  return null;
+};
 
-//메시지 수정
-const notifyNewOrder = async ( userId, restaurantId, orderId ) => {
+// 주문 생성 알림
+const notifyNewOrder = async (userId, restaurantId, orderId) => {
+
   const notificationMessage = `새로운 주문이 생성되었습니다. 주문 ID: ${orderId}`;
-  await notificationRepository.notificationsCreate(userId, restaurantId, orderId, notificationMessage);
+  
+  await notificationRepository.notificationsCreate({
+    userId,
+    restaurantId,
+    customerordersstorageId: orderId,
+    notificationMessage
+  });
 
   const restaurantOwnerWebSocket = await findRestaurantOwnerWebSocket(restaurantId);
+  
   if (restaurantOwnerWebSocket) {
-    restaurantOwnerWebSocket.send(JSON.stringify({ type: 'notification', data: notificationMessage }));
+    restaurantOwnerWebSocket.send(JSON.stringify({
+      type: 'notification',
+      data: notificationMessage
+    }));
   } else {
     console.warn(`식당 주인의 WebSocket 연결을 찾을 수 없습니다. 식당 ID: ${restaurantId}`);
   }
 };
 
-const notifyDeliveryCompleted = async ({ userId, orderId }) => {
+// 배달 시작 알림
+const notifyOrderConfirmed = async (restaurantId, orderId, customerOrdersStorageId, userId) => {
+  const notificationMessage = `배달이 시작되었습니다. 주문 ID: ${orderId}`;
+  
+  await notificationRepository.notificationsCreate({
+    userId,
+    restaurantId,
+    customerordersstorageId: customerOrdersStorageId,
+    notificationMessage
+  });
+
+  const customerWebSocket = await findUsersOwnerWebSocket(userId);
+  if (customerWebSocket) {
+    customerWebSocket.send(JSON.stringify({
+      type: 'notification',
+      data: notificationMessage
+    }));
+  } else {
+    console.warn(`고객님의 WebSocket 연결을 찾을 수 없습니다. 사용자 ID: ${userId}`);
+  }
+};
+
+// 배달 완료 알림
+const notifyDeliveryCompleted = async (restaurantId, orderId, customerOrdersStorageId, userId) => {
+  
   const notificationMessage = `배달이 완료되었습니다. 주문 ID: ${orderId}`;
 
-  await notificationRepository.notificationsCreate(userId, restaurantId, orderId, notificationMessage);
-
-  // 고객의 WebSocket 연결을 찾습니다.
-  const customerWebSocket = customerConnections.get(userId);
+  await notificationRepository.notificationsCreate({
+    userId,
+    restaurantId,
+    customerordersstorageId: customerOrdersStorageId,
+    notificationMessage
+  });
+  const customerWebSocket = await findUsersOwnerWebSocket(userId);
   if (customerWebSocket) {
-    customerWebSocket.send(JSON.stringify({ type: 'notification', data: notificationMessage }));
+    customerWebSocket.send(JSON.stringify({
+      type: 'notification',
+      data: notificationMessage
+    }));
   } else {
     console.warn(`고객님의 WebSocket 연결을 찾을 수 없습니다. 사용자 ID: ${userId}`);
   }
 };
 
-const notifyOrderConfirmed = async ({ userId, orderId }) => {
-  const notificationMessage = `배달이 시작되었습니다. 주문 ID: ${orderId}`;
-
-  await notificationRepository.notificationsCreate(userId, restaurantId, orderId, notificationMessage);
-
-  // 고객의 WebSocket 연결을 찾습니다.
-  const customerWebSocket = customerConnections.get(userId);
-  if (customerWebSocket) {
-    customerWebSocket.send(JSON.stringify({ type: 'notification', data: notificationMessage }));
-  } else {
-    console.warn(`고객님의 WebSocket 연결을 찾을 수 없습니다. 사용자 ID: ${userId}`);
-  }
-};
 export { createWebSocketServer, notifyNewOrder, notifyDeliveryCompleted, notifyOrderConfirmed };

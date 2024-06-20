@@ -143,7 +143,6 @@ export class OrdersRepository {
     });
   }
   
-
   confirmOrder = async ({ restaurantId, orderId }) => {
     const confirmOrder = await this.prisma.orders.update({
       where: {
@@ -171,7 +170,7 @@ export class OrdersRepository {
   };
 
   deliveryComplete = async ({ restaurantId, orderId }) => {
-    const deliveryComplete = await this.prisma.orders.update({
+    return await this.prisma.orders.update({
       where: {
         id: +orderId,
         restaurantId: restaurantId,
@@ -182,4 +181,10 @@ export class OrdersRepository {
       },
     });
   };
+
+  findById = async(id)=>{
+    return await this.prisma.customerOrdersStorage.findFirst({
+        where: {ordersId: +id}
+    })
+  }
 }

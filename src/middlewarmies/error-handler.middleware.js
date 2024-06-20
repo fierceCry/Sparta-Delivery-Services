@@ -2,7 +2,6 @@ import { HTTP_STATUS } from '../constants/http-status.constant.js';
 
 const globalErrorHandler = (err, req, res, next) => {
   console.error(err.stack);
-
   if (err.name === 'ValidationError') {
     return res.status(HTTP_STATUS.BAD_REQUEST).json({
       status: HTTP_STATUS.BAD_REQUEST,

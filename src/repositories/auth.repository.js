@@ -6,8 +6,9 @@ export class AuthRepository {
   }
 
   findByUserId = async (userId) => {
-    return await this.prisma.user.findUnique({
-      where: { id: userId },
+    console.log(userId)
+    return await this.prisma.users.findUnique({
+      where: { id: +userId },
     });
   };
 
@@ -90,17 +91,17 @@ export class AuthRepository {
     });
   };
 
-  token = async (userId, refreshToken) => {
+  token = async (userId, hashRefreshToken) => {
     await this.prisma.refreshToken.upsert({
       where: {
         userId,
       },
       update: {
-        refreshToken: refreshToken,
+        refreshToken: hashRefreshToken,
       },
       create: {
         userId,
-        refreshToken: refreshToken,
+        refreshToken: hashRefreshToken,
       },
     });
   };
