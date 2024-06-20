@@ -9,6 +9,7 @@ const router = express.Router();
 
 router.use('/auth', authRouter);
 router.use('/users', usersRouter);
-router.use('/restaurants', restaurantsRouter, foodsRouter);
+router.use('/restaurants', restaurantsRouter);
+router.use('/restaurants', foodsRouter);
 router.use('/', reviewRouter);
 export { router };
