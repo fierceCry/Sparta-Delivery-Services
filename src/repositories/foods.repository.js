@@ -6,6 +6,7 @@ export class FoodsRepository {
   }
 
   create = async ({ restaurantId, name, price, imageUrl }) => {
+    console.log(imageUrl)
     const data = await this.prisma.foods.create({
       data: {
         restaurantId,

@@ -76,31 +76,101 @@ async function main() {
   const foods2 = await prisma.foods.create({
     data: {
       restaurantId: restaurant1.id,
-      name: '햄버거 피자',
+      name: "햄버거 앙념피자",
+      price: 2,
+      imageUrl: { data: "https://google.com" },
+    }
+  })
+
+  const foods3 = await prisma.foods.create({
+    data: {
+
+      restaurantId: restaurant1.id,
+      name: "맛있는 타코야끼",
+      price: 2,
+      imageUrl: { data: "https://google.com" },
+    }
+  })
+
+  const foods4 = await prisma.foods.create({
+    data: {
+
+      restaurantId: restaurant2.id,
+      name: "연어 초밥들",
+      price: 2,
+      imageUrl: { data: "https://google.com" },
+    }
+  })
+
+  const foods5 = await prisma.foods.create({
+    data: {
+
+      restaurantId: restaurant2.id,
+      name: "연어의 롤",
       price: 2,
       imageUrl: { data: 'https://google.com' },
     },
   });
 
-  const review1 = await prisma.reviews.create({
+  const order1 = await prisma.orders.create({
     data: {
       userId: user1.id,
       restaurantId: restaurant1.id,
-      customerordersstorageId: order1.id,
-      rate: 'ONE',
-      content: '별로에요',
-      imageUrl: JSON.stringify(['https://google.com']),
+      state: 'DELIVERED',
     },
   });
-  const review2 = await prisma.reviews.create({
+
+  const order2 = await prisma.orders.create({
     data: {
       userId: user2.id,
       restaurantId: restaurant2.id,
-      customerordersstorageId: order2.id,
-      rate: 'ONE',
-      content: '별로에요',
-      imageUrl: JSON.stringify(['https://google.com']),
+      state: 'DELIVERED',
     },
+  });
+
+  const review1 = await prisma.reviews.create({
+    data: {
+      rate: "ONE",
+      content: "별로에요",
+      imageUrl: JSON.stringify(["https://google.com"]), // JSON 형식으로 변환
+      users: {
+        connect: {
+          id: user1.id // 올바른 필드명 사용
+        }
+      },
+      restaurants: {
+        connect: {
+          id: restaurant1.id // 올바른 필드명 사용
+        }
+      },
+      orders: {
+        connect: {
+          id: order1.id // 올바른 필드명 사용
+        }
+      }
+    }
+  });
+  const review2 = await prisma.reviews.create({
+    data: {
+      rate: "ONE",
+      content: "별로에요",
+      imageUrl: JSON.stringify(["https://google.com"]), // JSON 형식으로 변환
+      users: {
+        connect: {
+          id: user2.id // 올바른 필드명 사용
+        }
+      },
+      restaurants: {
+        connect: {
+          id: restaurant2.id // 올바른 필드명 사용
+        }
+      },
+      orders: {
+        connect: {
+          id: order2.id // 올바른 필드명 사용
+        }
+      }
+    }
   });
 
   console.log({

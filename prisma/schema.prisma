@@ -50,6 +50,7 @@ model Restaurants {
   restaurantType        String   @map("restaurant_type")
   restaurantPhoneNumber String   @map("restaurant_phone_number")
   restaurantTotalPrice  Int      @default(0)                        @map("restaurant_total_price")
+  restaurantRatingAvg   Int      @default(0)                        @map("restaurant_Rating_Avg")
   emailValidator        Boolean  @map("email_Validator")
   createdAt             DateTime @default(now()) @map("created_at")
   updatedAt             DateTime @updatedAt @map("updated_at")
@@ -88,7 +89,7 @@ model Reviews {
   id                      Int      @id @default(autoincrement())
   userId                  Int      @map("user_id")
   restaurantId            Int      @map("restaurant_id")
-  customerordersstorageId Int      @map("customerordersstorage_Id")
+  orderId                 Int      @map("order_Id")
   rate                    Rating
   content                 String
   imageUrl                Json     @map("image_url")
@@ -97,7 +98,7 @@ model Reviews {
 
   users       Users                 @relation(fields: [userId], references: [id])
   restaurants Restaurants           @relation(fields: [restaurantId], references: [id])
-  orders      CustomerOrdersStorage @relation(fields: [customerordersstorageId], references: [id])
+  orders      Orders                @relation(fields: [orderId], references: [id])
   comments    ReviewsComments[]
 
   @@map("reviews")
@@ -128,6 +129,7 @@ model Orders {
   createdAt    DateTime  @default(now()) @map("created_at")
   updatedAt    DateTime  @updatedAt @map("updated_at")
 
+  reviews      Reviews[]
   users                Users                   @relation(fields: [userId], references: [id])
   restaurant           Restaurants             @relation(fields: [restaurantId], references: [id])
   customerOrderStorage CustomerOrdersStorage[]
@@ -147,7 +149,6 @@ model CustomerOrdersStorage {
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
 
-  reviews      Reviews[]
   notification Notifications[]
   order        Orders          @relation(fields: [ordersId], references: [id])
   food         Foods           @relation(fields: [foodsId], references: [id])

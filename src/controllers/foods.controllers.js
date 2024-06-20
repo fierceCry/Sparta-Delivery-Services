@@ -8,10 +8,9 @@ export class FoodsController {
   //메뉴 생성
   create = async (req, res, next) => {
     try {
-      const { restaurantId } = req.params;
+      const restaurantId = req.user.id
       const { name, price } = req.body;
       const images = req.files;
-
       const data = await this.foodService.create(
         {
           restaurantId,
@@ -20,7 +19,7 @@ export class FoodsController {
         },
         price
       );
-
+      console.log(data)
       return res.status(HTTP_STATUS.CREATED).json({
         status: HTTP_STATUS.CREATED,
         message: '메뉴 생성완료!',
@@ -47,7 +46,8 @@ export class FoodsController {
   // 메뉴 수정
   update = async (req, res, next) => {
     try {
-      const { restaurantId, foodId } = req.params;
+      const restaurantId = req.user.id
+      const { foodId } = req.params;
       const { name, price } = req.body;
       const images = req.files;
 
@@ -73,7 +73,8 @@ export class FoodsController {
   // 메뉴 삭제
   delete = async (req, res, next) => {
     try {
-      const { restaurantId, foodId } = req.params;
+      const restaurantId = req.user.id
+      const { foodId } = req.params;
       const deletedFood = await this.foodService.deleteFood(
         parseInt(restaurantId, 10),
         parseInt(foodId, 10)

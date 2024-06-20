@@ -6,6 +6,7 @@ const redisClient = redis.createClient({
   password: ENV_KEY.REDIS_PASSWORD,
   legacyMode: true,
 });
+
 redisClient.on('connect', () => {
   console.info('Redis 연결에 성공했습니다.');
 });
@@ -22,6 +23,6 @@ redisClient
   .catch((err) => {
     console.error('Redis v4 연결에 실패했습니다.', err);
   });
-const redisCli = redisClient.v4;
 
-export { redisClient, redisCli };
+const redisCli = redisClient.v4
+export { redisCli };

@@ -15,16 +15,19 @@ export class FoodsService {
     const imageUrl = await Promise.all(
       images.map((image) => uploadImageS3(image))
     );
-
     const data = await this.foodsRepository.create({
       restaurantId: parseInt(restaurantId, 10),
       name,
       price: parseInt(price, 10),
-      imageUrl: JSON.stringify(imageUrl),
+      imageUrl: imageUrl,
     });
     return data;
   };
+
   getFoodsByRestaurant = async (restaurantId) => {
+    if(!restaurantId){
+      throw new HttpError.BadRequest('없는 음식점 입니다.')
+    }
     return await this.foodsRepository.findManyByRestaurant(restaurantId);
   };
 
@@ -60,13 +63,18 @@ export class FoodsService {
       data: {
         name,
         price: parseInt(price, 10),
-        imageUrl: JSON.stringify(imageUrl),
+        imageUrl: imageUrl,
       },
     });
     return data;
   };
 
   deleteFood = async (restaurantId, foodId) => {
+    if(!restaurantId){
+      throw new HttpError.BadRequest('없는 음식점 입니다.');
+    }else if(!foodId){
+      throw new HttpError.BadRequest('없는 메뉴입니다.');
+    }
     return await this.foodsRepository.delete(restaurantId, foodId);
   };
 }

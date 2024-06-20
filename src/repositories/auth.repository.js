@@ -5,12 +5,18 @@ export class AuthRepository {
     this.prisma = prisma;
   }
 
-  findById = async (userId) => {
-    return await this.prisma.user.findUnique({
-      where: { id: userId },
+  findByUserId = async (userId) => {
+    console.log(userId)
+    return await this.prisma.users.findUnique({
+      where: { id: +userId },
     });
   };
 
+  findByRestaurantsId = async (userId) => {
+    return await this.prisma.restaurants.findUnique({
+      where: { id: +userId },
+    });
+  };
   findByEmail = async ({ email }) => {
     return this.prisma.users.findFirst({
       where: { email: email },
@@ -85,17 +91,17 @@ export class AuthRepository {
     });
   };
 
-  token = async (userId, refreshToken) => {
+  token = async (userId, hashRefreshToken) => {
     await this.prisma.refreshToken.upsert({
       where: {
         userId,
       },
       update: {
-        refreshToken: refreshToken,
+        refreshToken: hashRefreshToken,
       },
       create: {
         userId,
-        refreshToken: refreshToken,
+        refreshToken: hashRefreshToken,
       },
     });
   };
