@@ -1,4 +1,5 @@
 import { USER_ROLES } from '../constants/auth.constants.js';
+import { prisma } from '../utils/utils.prisma.js';
 
 export class UserRepository {
   constructor(prisma) {

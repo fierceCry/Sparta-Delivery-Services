@@ -12,4 +12,4 @@ const searchController = new SearchController(searchService);
 
 searchRouter.get('/', searchController.Search);
 
-export {searchRouter};
+export { searchRouter };

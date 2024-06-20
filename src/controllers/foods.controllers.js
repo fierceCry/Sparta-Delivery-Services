@@ -8,20 +8,23 @@ export class FoodsController {
   //메뉴 생성
   create = async (req, res, next) => {
     try {
-      const { name, price, imageUrl } = req.body;
-      const restaurantId = req.user.id;
+      const { restaurantId } = req.params;
+      const { name, price } = req.body;
+      const images = req.files;
 
-      const createdFood = await this.foodService.createFood({
-        restaurantId,
-        name,
-        price,
-        imageUrl,
-      });
+      const data = await this.foodService.create(
+        {
+          restaurantId,
+          name,
+          images,
+        },
+        price
+      );
 
       return res.status(HTTP_STATUS.CREATED).json({
         status: HTTP_STATUS.CREATED,
         message: '메뉴 생성완료!',
-        data: createdFood,
+        data: data,
       });
     } catch (error) {
       next(error);
@@ -41,41 +44,26 @@ export class FoodsController {
     }
   };
 
-  // 메뉴 상세 조회
-  // readOne = async (req, res, next) => {
-  //   try {
-  //     const { restaurantId, foodId } = req.params;
-  //     const food = await this.foodService.getFoodById(restaurantId, foodId);
-  //     if (!food) {
-  //       throw new HttpError.NotFound('없는 음식입니다.');
-  //     }
-  //     return res.status(HTTP_STATUS.OK).json({
-  //       status: HTTP_STATUS.OK,
-  //     });
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // };
-
   // 메뉴 수정
   update = async (req, res, next) => {
     try {
       const { restaurantId, foodId } = req.params;
-      const { name, price, imageUrl } = req.body;
-      const updatedFood = await this.foodService.updateFood(
-        parseInt(restaurantId, 10),
-        parseInt(foodId, 10),
-        { name, price, imageUrl }
+      const { name, price } = req.body;
+      const images = req.files;
+
+      const data = await this.foodService.update(
+        { restaurantId, foodId, name, images },
+        price
       );
 
-      if (!updatedFood) {
+      if (!foodId) {
         throw new HttpError.NotFound('없는 음식입니다.');
       }
 
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
         message: '메뉴 수정완료!',
-        data: updatedFood,
+        data: data,
       });
     } catch (error) {
       next(error);
@@ -98,7 +86,7 @@ export class FoodsController {
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
         message: '삭제 완료',
-        data: { id: deletedFood.id },
+        data: deletedFood.id,
       });
     } catch (error) {
       next(error);
