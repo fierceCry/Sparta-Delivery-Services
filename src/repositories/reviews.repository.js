@@ -1,8 +1,26 @@
+import { getNumRating } from '../constants/review.constants.js';
+
 export class ReviewsRepository {
   constructor(prisma) {
     this.prisma = prisma;
   }
   /* 리뷰 및 평점 생성 */
+
+  /*주문 조회*/
+  findOrderById = async (customerordersstorageId, userId) => {
+    const order = await this.prisma.customerOrdersStorage.findUnique({
+      where: { id: +customerordersstorageId },
+      include: { users: true, restaurants: true },
+    });
+
+    // 주문이 존재하지 않거나, 주문이 사용자와 관계없을 때
+    if (!order || order.userId !== userId) {
+      return null;
+    }
+    return order;
+  };
+
+  /*리뷰 생성*/
   create = async ({
     userId,
     restaurantId,
@@ -15,19 +33,43 @@ export class ReviewsRepository {
       data: {
         userId,
         restaurantId,
-        customerordersstorageId: +customerordersstorageId,
+        customerordersstorageId,
         rate,
         content,
-        imageUrl: JSON.stringify(imageUrl),
+        imageUrl,
       },
     });
+    //전수원 24-06-20 추가
+    const findRate = await this.prisma.reviews.findMany({
+      where: { restaurantId },
+      select: {
+        rate: true,
+      },
+    });
+    let totalRate = 0;
+    const reviewsRate = await findRate.map((el) => getNumRating(el.rate));
+    reviewsRate.forEach((rate) => {
+      totalRate += rate;
+    });
+    const reviewsAvgRate = totalRate / reviewsRate.length;
+    await this.prisma.restaurants.update({
+      where: { id: +restaurantId },
+      data: {
+        restaurantRatingAvg: reviewsAvgRate,
+      },
+    });
+    //전수원 24-06-20 추가
     return data;
   };
 
   /* 리뷰 및 평점 목록 조회 */
-  readMany = async (user) => {
+  readMany = async (user, sort = 'desc') => {
+    //리뷰 목록 정렬
+    const sortOrder = sort.toLowerCase() === 'asc' ? 'asc' : 'desc';
+
     const reviews = await this.prisma.reviews.findMany({
       where: { userId: +user.id },
+      orderBy: { createdAt: sortOrder },
       select: {
         users: { select: { nickname: true } },
         restaurants: { select: { restaurantName: true } },
@@ -39,24 +81,16 @@ export class ReviewsRepository {
       },
     });
 
-    // 출력 내용
-    const data = reviews.map((review) => {
-      let imageUrl;
-      try {
-        imageUrl = JSON.parse(review.imageUrl);
-      } catch (e) {
-        imageUrl = review.imageUrl;
-      }
-      return {
-        userNickname: review.users.nickname,
-        restaurantName: review.restaurants.restaurantName,
-        rate: review.rate,
-        content: review.content,
-        imageUrl,
-        createdAt: review.createdAt,
-        updatedAt: review.updatedAt,
-      };
-    });
+    //출력 내용
+    const data = reviews.map((review) => ({
+      userNickname: review.users.nickname,
+      restaurantName: review.restaurants.restaurantName,
+      rate: review.rate,
+      content: review.content,
+      imageUrl: review.imageUrl,
+      createdAt: review.createdAt,
+      updatedAt: review.updatedAt,
+    }));
     return data;
   };
 
@@ -80,20 +114,13 @@ export class ReviewsRepository {
       return null;
     }
 
-    let imageUrl;
-    try {
-      imageUrl = JSON.parse(data.imageUrl);
-    } catch (e) {
-      imageUrl = data.imageUrl;
-    }
-
     data = {
       id: data.id,
       userNickname: data.users.nickname,
       restaurantName: data.restaurants.restaurantName,
       rate: data.rate,
       content: data.content,
-      imageUrl: imageUrl,
+      imageUrl: data.imageUrl,
       createdAt: data.createdAt,
       updatedAt: data.updatedAt,
     };
@@ -102,18 +129,15 @@ export class ReviewsRepository {
   };
 
   /* 리뷰 및 평점 수정 */
-  update = async (user, reviewId, updateData) => {
-    const { rate, content, imageUrl } = updateData;
-
+  update = async (user, reviewId, rate, content, imageUrl) => {
     const data = await this.prisma.reviews.update({
       where: { id: +reviewId, userId: +user.id },
       data: {
         ...(rate && { rate }),
         ...(content && { content }),
-        ...(imageUrl && { imageUrl: JSON.stringify(imageUrl) }),
+        ...(imageUrl && { imageUrl }),
       },
     });
-
     return data;
   };
 
