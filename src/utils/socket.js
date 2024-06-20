@@ -86,9 +86,9 @@ const findRestaurantOwnerWebSocket = async (restaurantId) => {
   return null;
 };
 
-const notifyNewOrder = async ({ userId, restaurantId, orderId }) => {
+//메시지 수정
+const notifyNewOrder = async ( userId, restaurantId, orderId ) => {
   const notificationMessage = `새로운 주문이 생성되었습니다. 주문 ID: ${orderId}`;
-  console.log(userId, restaurantId, orderId)
   await notificationRepository.notificationsCreate(userId, restaurantId, orderId, notificationMessage);
 
   const restaurantOwnerWebSocket = await findRestaurantOwnerWebSocket(restaurantId);
@@ -102,6 +102,8 @@ const notifyNewOrder = async ({ userId, restaurantId, orderId }) => {
 const notifyDeliveryCompleted = async ({ userId, orderId }) => {
   const notificationMessage = `배달이 완료되었습니다. 주문 ID: ${orderId}`;
 
+  await notificationRepository.notificationsCreate(userId, restaurantId, orderId, notificationMessage);
+
   // 고객의 WebSocket 연결을 찾습니다.
   const customerWebSocket = customerConnections.get(userId);
   if (customerWebSocket) {
@@ -113,6 +115,8 @@ const notifyDeliveryCompleted = async ({ userId, orderId }) => {
 
 const notifyOrderConfirmed = async ({ userId, orderId }) => {
   const notificationMessage = `배달이 시작되었습니다. 주문 ID: ${orderId}`;
+
+  await notificationRepository.notificationsCreate(userId, restaurantId, orderId, notificationMessage);
 
   // 고객의 WebSocket 연결을 찾습니다.
   const customerWebSocket = customerConnections.get(userId);

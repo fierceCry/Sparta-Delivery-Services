@@ -82,26 +82,26 @@ async function main() {
     },
   });
 
-  const review1 = await prisma.reviews.create({
-    data: {
-      userId: user1.id,
-      restaurantId: restaurant1.id,
-      customerordersstorageId: order1.id,
-      rate: 'ONE',
-      content: '별로에요',
-      imageUrl: JSON.stringify(['https://google.com']),
-    },
-  });
-  const review2 = await prisma.reviews.create({
-    data: {
-      userId: user2.id,
-      restaurantId: restaurant2.id,
-      customerordersstorageId: order2.id,
-      rate: 'ONE',
-      content: '별로에요',
-      imageUrl: JSON.stringify(['https://google.com']),
-    },
-  });
+  // const review1 = await prisma.reviews.create({
+  //   data: {
+  //     userId: user1.id,
+  //     restaurantId: restaurant1.id,
+  //     customerordersstorageId: order1.id,
+  //     rate: 'ONE',
+  //     content: '별로에요',
+  //     imageUrl: JSON.stringify(['https://google.com']),
+  //   },
+  // });
+  // const review2 = await prisma.reviews.create({
+  //   data: {
+  //     userId: user2.id,
+  //     restaurantId: restaurant2.id,
+  //     customerordersstorageId: order2.id,
+  //     rate: 'ONE',
+  //     content: '별로에요',
+  //     imageUrl: JSON.stringify(['https://google.com']),
+  //   },
+  // });
 
   console.log({
     user1,
@@ -110,8 +110,8 @@ async function main() {
     restaurant2,
     foods1,
     foods2,
-    review1,
-    review2,
+    // review1,
+    // review2,
   });
 }
 

@@ -21,6 +21,6 @@ app.get('/api', (req, res) => {
   return res.status(HTTP_STATUS.OK).json({ message: '테스트 성공하였습니다.' });
 });
 
-app.listen(ENV_KEY.PORT, async () => {
+server.listen(ENV_KEY.PORT, async () => {
   console.log(ENV_KEY.PORT, '포트로 서버가 열렸습니다.');
 });
