@@ -1,25 +1,69 @@
-import { HTTP_STATUS } from '../constants/http-status.constant.js';
-import { prisma } from '../utils/utils.prisma.js';
+import { HttpError } from '../errors/http.error.js';
+import { uploadImageS3 } from '../services/s3.services.js';
 
 export class FoodsService {
   constructor(foodsRepository) {
     this.foodsRepository = foodsRepository;
   }
 
-  createFood = async (data) => {
-    return await this.foodsRepository.create(data);
-  };
+  create = async ({ restaurantId, name, images }, price) => {
+    if (images.length === 0) {
+      throw new HttpError.NotFound('이미지가 업로드되지 않았습니다.');
+    }
 
+    // 이미지 S3 업로드 및 URL 생성
+    const imageUrl = await Promise.all(
+      images.map((image) => uploadImageS3(image))
+    );
+
+    const data = await this.foodsRepository.create({
+      restaurantId: parseInt(restaurantId, 10),
+      name,
+      price: parseInt(price, 10),
+      imageUrl: JSON.stringify(imageUrl),
+    });
+    return data;
+  };
   getFoodsByRestaurant = async (restaurantId) => {
     return await this.foodsRepository.findManyByRestaurant(restaurantId);
   };
 
-  //   getFoodById = async (restaurantId, foodId) => {
-  //     return await this.foodsRepository.findOne(restaurantId, foodId);
-  //   };
+  update = async ({ restaurantId, foodId, name, images }, price) => {
+    const parsedRestaurantId = parseInt(restaurantId, 10);
+    const parsedFoodId = parseInt(foodId, 10);
 
-  updateFood = async (restaurantId, foodId, data) => {
-    return await this.foodsRepository.update(restaurantId, foodId, data);
+    // 레코드가 존재하는지 확인
+    const food = await this.foodsRepository.findUnique({
+      where: {
+        id_restaurantId: {
+          id: parsedFoodId,
+          restaurantId: parsedRestaurantId,
+        },
+      },
+    });
+
+    if (!food) {
+      throw new HttpError.NotFound('없는 음식입니다.');
+    }
+
+    const imageUrl = await Promise.all(
+      images.map((image) => uploadImageS3(image))
+    );
+
+    const data = await this.foodsRepository.update({
+      where: {
+        id_restaurantId: {
+          id: parsedFoodId,
+          restaurantId: parsedRestaurantId,
+        },
+      },
+      data: {
+        name,
+        price: parseInt(price, 10),
+        imageUrl: JSON.stringify(imageUrl),
+      },
+    });
+    return data;
   };
 
   deleteFood = async (restaurantId, foodId) => {
