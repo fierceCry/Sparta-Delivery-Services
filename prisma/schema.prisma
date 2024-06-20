@@ -49,6 +49,7 @@ model Restaurants {
   restaurantAddress     String   @map("restaurant_address")
   restaurantType        String   @map("restaurant_type")
   restaurantPhoneNumber String   @map("restaurant_phone_number")
+  restaurantTotalPrice  Int      @default(0)                        @map("restaurant_total_price")
   emailValidator        Boolean  @map("email_Validator")
   createdAt             DateTime @default(now()) @map("created_at")
   updatedAt             DateTime @updatedAt @map("updated_at")
