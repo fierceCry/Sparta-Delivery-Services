@@ -7,7 +7,6 @@ export class FoodsService {
   }
 
   create = async ({ restaurantId, name, images }, price) => {
-
     if (images.length === 0) {
       throw new HttpError.NotFound('이미지가 업로드되지 않았습니다.');
     }

@@ -12,16 +12,19 @@ export class FoodsController {
       const { name, price } = req.body;
       const images = req.files;
 
-      const data = await this.foodService.create({
-        restaurantId,
-        name,
-        images
-      }, price);
+      const data = await this.foodService.create(
+        {
+          restaurantId,
+          name,
+          images,
+        },
+        price
+      );
 
       return res.status(HTTP_STATUS.CREATED).json({
         status: HTTP_STATUS.CREATED,
         message: '메뉴 생성완료!',
-        data:data,
+        data: data,
       });
     } catch (error) {
       next(error);
@@ -45,7 +48,7 @@ export class FoodsController {
   update = async (req, res, next) => {
     try {
       const { restaurantId, foodId } = req.params;
-      const { name, price, } = req.body;
+      const { name, price } = req.body;
       const images = req.files;
 
       const data = await this.foodService.update(
@@ -60,7 +63,7 @@ export class FoodsController {
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
         message: '메뉴 수정완료!',
-        data:data,
+        data: data,
       });
     } catch (error) {
       next(error);
@@ -83,7 +86,7 @@ export class FoodsController {
       return res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
         message: '삭제 완료',
-        data: deletedFood.id ,
+        data: deletedFood.id,
       });
     } catch (error) {
       next(error);

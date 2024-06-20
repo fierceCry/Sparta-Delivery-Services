@@ -1,16 +1,11 @@
-import { HttpError } from "../errors/http.error.js";
+import { HttpError } from '../errors/http.error.js';
 
 export class FoodsRepository {
   constructor(prisma) {
     this.prisma = prisma;
   }
 
-  create = async ({
-    restaurantId,
-    name,
-    price,
-    imageUrl,
-  }) => {
+  create = async ({ restaurantId, name, price, imageUrl }) => {
     const data = await this.prisma.foods.create({
       data: {
         restaurantId,
@@ -28,8 +23,7 @@ export class FoodsRepository {
     });
   };
 
-
-  findUnique = async ({ where }) => { 
+  findUnique = async ({ where }) => {
     return await this.prisma.foods.findUnique({
       where: where,
     });

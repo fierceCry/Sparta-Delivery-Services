@@ -14,9 +14,13 @@ const foodsRepository = new FoodsRepository(prisma);
 const foodsService = new FoodsService(foodsRepository);
 const foodsController = new FoodsController(foodsService);
 
-foodsRouter.post('/:restaurantId/foods', 
-authMiddleware, 
-upload.array('images', 10), postFoodValidator, foodsController.create);
+foodsRouter.post(
+  '/:restaurantId/foods',
+  authMiddleware,
+  upload.array('images', 10),
+  postFoodValidator,
+  foodsController.create
+);
 
 foodsRouter.get('/:restaurantId/foods', foodsController.readMany);
 
@@ -35,4 +39,3 @@ foodsRouter.delete(
 );
 
 export { foodsRouter };
-

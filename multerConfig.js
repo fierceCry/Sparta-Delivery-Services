@@ -20,9 +20,9 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, callback) {
     // 파일 이름 설정
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
     callback(null, uniqueSuffix + '-' + file.originalname);
-  }
+  },
 });
 
 const upload = multer({ storage: storage });
