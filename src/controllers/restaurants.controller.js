@@ -5,6 +5,7 @@ export class RestaurantsController {
   constructor(restaurantsService) {
     this.restaurantsService = restaurantsService;
   }
+  //가게전체조회
   getAllRestaurants = async (req, res, next) => {
     try {
       const data = await this.restaurantsService.getAllRestaurants();
@@ -18,7 +19,7 @@ export class RestaurantsController {
       next(err);
     }
   };
-
+  //가게상세조회
   getRestaurants = async (req, res) => {
     const restaurant = req.user;
 
@@ -29,7 +30,7 @@ export class RestaurantsController {
       data,
     });
   };
-
+  //가게정보수정
   updateRestaurants = async (req, res) => {
     const { id } = req.user;
     const {
@@ -52,9 +53,11 @@ export class RestaurantsController {
       data: restaurant,
     });
   };
-
+  //가게랭킹조회(최대5개)
   getRankings = async (req, res) => {
-    const data = await this.restaurantsService.getRankings();
+    const { sort = 'totalprice' } = req.body;
+
+    const data = await this.restaurantsService.getRankings(sort);
 
     return res
       .status(HTTP_STATUS.OK)
