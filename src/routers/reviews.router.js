@@ -1,4 +1,5 @@
-import { Router } from 'express';
+import express from 'express';
+import multer from 'multer';
 import { prisma } from '../utils/utils.prisma.js';
 import { authMiddleware } from '../middlewarmies/require-access-token.middleware.js';
 import { createReiWeValidator } from '../middlewarmies/validation/create-review-validator.middleware.js';
@@ -6,10 +7,9 @@ import { updateReiWeValidator } from '../middlewarmies/validation/update-review-
 import { ReviewsController } from '../controllers/reviews.controllers.js';
 import { ReviewsService } from '../services/reviews.services.js';
 import { ReviewsRepository } from '../repositories/reviews.repository.js';
-import multer from 'multer';
 import { OrdersRepository } from '../repositories/orders.repository.js';
 
-const reviewRouter = Router();
+const reviewRouter = express.Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 

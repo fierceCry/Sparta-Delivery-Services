@@ -74,14 +74,14 @@ export class ReviewsController {
         deleteImages = [deleteImages];
       }
 
-      const data = await this.reviewsService.update(
+      const data = await this.reviewsService.update({
         reviewId,
         user,
         rate,
         content,
         images,
-        deleteImages
-      );
+        deleteImages,
+      });
 
       res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,

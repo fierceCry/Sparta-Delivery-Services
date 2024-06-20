@@ -69,7 +69,7 @@ export class ReviewsService {
   };
 
   /* 리뷰 및 평점 수정 */
-  update = async (reviewId, user, rate, content, images, deleteImages) => {
+  update = async ({ reviewId, user, rate, content, images, deleteImages }) => {
     let data = await this.reviewsRepository.readOne(reviewId, user);
 
     if (!data) {

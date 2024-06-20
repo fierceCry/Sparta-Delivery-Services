@@ -16,7 +16,7 @@ export const uploadImageS3 = async (file) => {
 
 export const deleteImageS3 = async (imageUrl) => {
   const url = new URL(imageUrl);
-  const key = url.pathname.substring(1);
+  const key = decodeURIComponent(url.pathname.substring(1));
 
   const params = {
     Bucket: ENV_KEY.AWS_S3_BUCKET_NAME,
