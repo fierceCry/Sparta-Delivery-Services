@@ -28,9 +28,17 @@
 - **조규민**: 음식점 메뉴 CRUD
 
 ## API 명세서, ERD, 와이어프레임
-- **와이어프레임**: [Figma](https://www.figma.com/file/IjCaHI8oZEAxUqj32tJKFx?type=design%27&node-id=0:1)
-- **ERD**: [DrawSQL](https://drawsql.app/teams/-1385/diagrams/-2)
-- **API 명세서**: [Notion](https://teamsparta.notion.site/416d422bdfb54a398a48d5f27e274836?v=2881f05f3bb64764ab8122793294c982&pvs=4)
+- **와이어프레임**: 
+
+[Figma](https://www.figma.com/file/IjCaHI8oZEAxUqj32tJKFx?type=design%27&node-id=0:1)
+
+- **ERD**: 
+
+[DrawSQL](https://drawsql.app/teams/-1385/diagrams/-2)
+
+- **API 명세서**: 
+
+[Notion](https://teamsparta.notion.site/416d422bdfb54a398a48d5f27e274836?v=2881f05f3bb64764ab8122793294c982&pvs=4)
 
 ## 주요 기능 설명
 
