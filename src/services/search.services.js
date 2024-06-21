@@ -9,7 +9,6 @@ export class SearchService {
     if (!data) {
       throw new HttpError.Conflict('검색어를 입력해주세요.');
     }
-    const search = await this.searchRepository.searchSystem(data);
-    return search;
+    return await this.searchRepository.searchSystem(data);
   };
 }

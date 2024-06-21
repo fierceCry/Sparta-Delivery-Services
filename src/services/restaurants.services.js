@@ -4,7 +4,9 @@ export class RestaurantsService {
   }
   getAllRestaurants = async () => {
     const data = await this.restaurantsRepository.getAllRestaurants();
-
+    if (!data) {
+      throw new HttpError.NotFound('데이터가 존재하지않습니다.');
+    }
     return data;
   };
 
@@ -24,7 +26,7 @@ export class RestaurantsService {
     );
     return {
       ...restaurants,
-      bossPassword: undefined,
+      bossPassword: _,
     };
   };
 

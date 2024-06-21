@@ -141,7 +141,7 @@ export class OrdersRepository {
         }
       });
   
-      return updateOrder; // 반환할 값을 명시적으로 지정
+      return order; // 반환할 값을 명시적으로 지정
     });
   }
   
@@ -187,6 +187,15 @@ export class OrdersRepository {
   findById = async(id)=>{
     return await this.prisma.customerOrdersStorage.findFirst({
         where: {ordersId: +id}
+    })
+  }
+
+  findOrderById = async(customerordersstorageId, userId)=>{
+    return await this.prisma.customerOrdersStorage.findFirst({
+      where: {
+        id: +customerordersstorageId,
+        userId
+      }
     })
   }
 }

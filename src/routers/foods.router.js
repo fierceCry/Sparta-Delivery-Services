@@ -3,7 +3,7 @@ import { FoodsController } from '../controllers/foods.controllers.js';
 import { FoodsService } from '../services/foods.services.js';
 import { FoodsRepository } from '../repositories/foods.repository.js';
 import { prisma } from '../utils/utils.prisma.js';
-import { postFoodValidator } from '../middlewarmies/validation/postFood.validator.js';
+import { postFoodValidator } from '../middlewarmies/validation/post-food.validator.js';
 import { authMiddleware } from '../middlewarmies/require-access-token.middleware.js';
 import multer from 'multer';
 
@@ -14,6 +14,7 @@ const foodsRepository = new FoodsRepository(prisma);
 const foodsService = new FoodsService(foodsRepository);
 const foodsController = new FoodsController(foodsService);
 
+/** 업장 메뉴 생성 **/
 foodsRouter.post(
   '/foods',
   authMiddleware,
@@ -22,8 +23,10 @@ foodsRouter.post(
   foodsController.create
 );
 
+/** 업장 조회 **/
 foodsRouter.get('/:restaurantId/foods', foodsController.readMany);
 
+/** 업장 메뉴 수정 **/
 foodsRouter.patch(
   '/foods/:foodId',
   authMiddleware,
@@ -32,6 +35,7 @@ foodsRouter.patch(
   foodsController.update
 );
 
+/** 업장 메뉴 삭제 **/
 foodsRouter.delete(
   '/foods/:foodId',
   authMiddleware,

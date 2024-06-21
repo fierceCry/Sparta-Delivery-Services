@@ -5,31 +5,39 @@ export class UserController {
     this.userService = userService;
   }
   getUser = async (req, res) => {
-    const user = req.user;
+    try {
+      const user = req.user;
 
-    const data = { ...user, password: undefined };
+      const data = { ...user, password: _ };
 
-    return res
-      .status(HTTP_STATUS.OK)
-      .json({ message: '정상적으로 정보조회가 완료되었습니다.', data });
+      return res
+        .status(HTTP_STATUS.OK)
+        .json({ message: '정상적으로 정보조회가 완료되었습니다.', data });
+    } catch (error) {
+      next(error);
+    }
   };
 
   updateUser = async (req, res) => {
-    const { id } = req.user;
+    try {
+      const { id } = req.user;
 
-    const { name, nickname, phoneNumber, address } = req.body;
+      const { name, nickname, phoneNumber, address } = req.body;
 
-    const data = await this.userService.updateUser(
-      id,
-      name,
-      nickname,
-      phoneNumber,
-      address
-    );
+      const data = await this.userService.updateUser(
+        id,
+        name,
+        nickname,
+        phoneNumber,
+        address
+      );
 
-    return res
-      .status(HTTP_STATUS.CREATED)
-      .json({ message: '정상적으로 정보수정이 완료되었습니다.', data });
+      return res
+        .status(HTTP_STATUS.CREATED)
+        .json({ message: '정상적으로 정보수정이 완료되었습니다.', data });
+    } catch (error) {
+      next(error);
+    }
   };
 
   logOut = async (req, res, next) => {

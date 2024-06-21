@@ -11,10 +11,9 @@ export class ReviewsService {
   /* 리뷰 및 평점 생성 */
   create = async (user, customerordersstorageId, rate, content, images) => {
     const order = await this.ordersRepository.findOrderById(
-      parseInt(customerordersstorageId),
+      customerordersstorageId,
       user.id
     );
-
     if (!order) {
       throw new HttpError.NotFound('존재하지 않는 주문 정보입니다.');
     }
@@ -30,12 +29,11 @@ export class ReviewsService {
 
     // 별표로 변환
     const starRating = getStarRating(rate);
-
     // 리뷰 생성
     const data = await this.reviewsRepository.create({
-      userId: user.id,
-      restaurantId: order.id,
-      customerordersstorageId: +customerordersstorageId,
+      userId:user.id,
+      restaurantId: order.restaurantsId,
+      orderId: +customerordersstorageId,
       rate: starRating,
       content,
       imageUrl: JSON.stringify(imageUrl),
@@ -70,8 +68,9 @@ export class ReviewsService {
 
   /* 리뷰 및 평점 수정 */
   update = async ({ reviewId, user, rate, content, images, deleteImages }) => {
-    let data = await this.reviewsRepository.readOne(reviewId, user);
 
+    let data = await this.reviewsRepository.readOne(reviewId, user);
+    
     if (!data) {
       throw new HttpError.NotFound('존재하지 않는 리뷰입니다.');
     }
@@ -118,11 +117,17 @@ export class ReviewsService {
     const updateData = {
       rate: starRating,
       content,
-      imageUrl: JSON.stringify(imageUrl),
+      imageUrl: imageUrl,
     };
 
     // 리뷰 수정
-    data = await this.reviewsRepository.update(user, reviewId, updateData);
+    data = await this.reviewsRepository.update({
+      userId: user.id, 
+      reviewId, 
+      rate: updateData.rate,
+      content: updateData.content,
+      imageUrl: updateData.imageUrl
+    });
 
     return data;
   };

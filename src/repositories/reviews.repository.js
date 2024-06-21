@@ -7,9 +7,9 @@ export class ReviewsRepository {
   /* 리뷰 및 평점 생성 */
 
   /*주문 조회*/
-  findOrderById = async (customerordersstorageId, userId) => {
-    const order = await this.prisma.customerOrdersStorage.findUnique({
-      where: { id: +customerordersstorageId },
+  findOrderById = async (orders, userId) => {
+    const order = await this.prisma.orders.findUnique({
+      where: { id: +orders },
       include: { users: true, restaurants: true },
     });
 
@@ -24,16 +24,24 @@ export class ReviewsRepository {
   create = async ({
     userId,
     restaurantId,
-    customerordersstorageId,
+    orderId,
     rate,
     content,
     imageUrl,
   }) => {
+    const order = await this.prisma.orders.findUnique({
+      where: {
+        id: +orderId,
+      },
+      select: {
+        state: true
+      }
+    });
     const data = await this.prisma.reviews.create({
       data: {
         userId,
         restaurantId,
-        customerordersstorageId,
+        orderId: orderId,
         rate,
         content,
         imageUrl,
@@ -129,9 +137,9 @@ export class ReviewsRepository {
   };
 
   /* 리뷰 및 평점 수정 */
-  update = async (user, reviewId, rate, content, imageUrl) => {
+  update = async ({userId, reviewId, rate, content, imageUrl}) => {
     const data = await this.prisma.reviews.update({
-      where: { id: +reviewId, userId: +user.id },
+      where: { id: +reviewId, userId: +userId },
       data: {
         ...(rate && { rate }),
         ...(content && { content }),

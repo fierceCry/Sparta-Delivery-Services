@@ -12,11 +12,14 @@ const restaurantsRepository = new RestaurantsRepository(prisma);
 const restaurantsService = new RestaurantsService(restaurantsRepository);
 const restaurantsController = new RestaurantsController(restaurantsService);
 
+/** 업장 조회 **/
 restaurantsRouter.get(
   '/me',
   authMiddleware,
   restaurantsController.getRestaurants
 );
+
+/** 업장 정보 수정 **/
 restaurantsRouter.patch(
   '/me',
   authMiddleware,
@@ -24,6 +27,7 @@ restaurantsRouter.patch(
   restaurantsController.updateRestaurants
 );
 
+/** 업장 랭킹 조회 **/
 restaurantsRouter.get('/rankings', restaurantsController.getRankings);
 
 export { restaurantsRouter };

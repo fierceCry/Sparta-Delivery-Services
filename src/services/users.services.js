@@ -10,7 +10,7 @@ export class UserService {
       phoneNumber,
       address
     );
-    return { ...user, password: undefined };
+    return { ...user, password: _ };
   };
 
   logOut = async(id, role)=>{

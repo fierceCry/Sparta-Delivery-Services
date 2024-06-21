@@ -16,10 +16,9 @@ export class FoodsController {
           restaurantId,
           name,
           images,
-        },
-        price
+          price
+        }
       );
-      console.log(data)
       return res.status(HTTP_STATUS.CREATED).json({
         status: HTTP_STATUS.CREATED,
         message: '메뉴 생성완료!',
@@ -52,8 +51,7 @@ export class FoodsController {
       const images = req.files;
 
       const data = await this.foodService.update(
-        { restaurantId, foodId, name, images },
-        price
+        { restaurantId, foodId, name, images, price} 
       );
 
       if (!foodId) {

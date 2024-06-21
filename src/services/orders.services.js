@@ -10,7 +10,7 @@ export class OrdersService {
   }
 
   addToCart = async ({ userId, restaurantId, foodId, count }) => {
-    const addToCart = await this.ordersRepository.addToCart({
+    return await this.ordersRepository.addToCart({
       userId,
       restaurantId,
       foodId,
@@ -25,7 +25,7 @@ export class OrdersService {
     });
     const result = await this.ordersRepository.findById(data.id)
     await notifyNewOrder(userId, restaurantId, result.id);
-    return;
+    return data;
   };
 
   confirmOrder = async ({ restaurantId, orderId }) => {
@@ -46,10 +46,8 @@ export class OrdersService {
         throw new HttpError.NotFound(`해당하는 주문을 찾을 수 없습니다.`);
       }
 
-      // 업데이트된 주문 정보를 가져오기
       const result = await this.ordersRepository.findById(deliveryOrder.id);
 
-      // 알림 보내기
       await notifyOrderConfirmed(restaurantId, orderId, result.id, result.userId);
   
       return deliveryOrder;

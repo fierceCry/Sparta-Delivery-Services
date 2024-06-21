@@ -1,13 +1,12 @@
-import { getSort, RANKINGLIMIT } from '../constants/restaurants.constants.js';
+import { getSort, RANKINGLIMIT, SORT } from '../constants/restaurants.constants.js';
+import { HttpError } from '../errors/http.error.js';
 
 export class RestaurantsRepository {
   constructor(prisma) {
     this.prisma = prisma;
   }
   getAllRestaurants = async () => {
-    const data = await this.prisma.Restaurants.findMany();
-
-    return data;
+    return await this.prisma.Restaurants.findMany();
   };
 
   updateRestaurants = async (
@@ -17,7 +16,7 @@ export class RestaurantsRepository {
     restaurantType,
     restaurantPhoneNumber
   ) => {
-    const restaurants = await this.prisma.Restaurants.update({
+    return await this.prisma.Restaurants.update({
       where: { id },
       data: {
         restaurantName,
@@ -26,20 +25,19 @@ export class RestaurantsRepository {
         restaurantPhoneNumber,
       },
     });
-    return restaurants;
   };
 
   getRankings = async (sortToLower, limit = RANKINGLIMIT) => {
     if (getSort(sortToLower)) {
       const restaruantsRanking = await this.prisma.Restaurants.findMany({
         orderBy: {
-          [getSort(sortToLower)]: 'desc',
+          [getSort(sortToLower)]: SORT.GET_SORT,
         },
         take: limit,
       });
       return restaruantsRanking;
     } else {
-      throw new Error(`Unsupported sorting option: ${sortToLower}`);
+      throw new HttpError.BadRequest(`Unsupported sorting option: ${sortToLower}`);
     }
   };
 }

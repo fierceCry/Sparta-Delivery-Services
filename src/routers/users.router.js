@@ -12,12 +12,18 @@ const userRepository = new UserRepository(prisma);
 const userService = new UserService(userRepository);
 const userController = new UserController(userService);
 
+/** 고객 정보 조회 **/
 usersRouter.get('/me', authMiddleware, userController.getUser);
+
+/** 고객 정보 수정 **/
 usersRouter.patch(
   '/me',
   authMiddleware,
   usersUpdateValidator,
   userController.updateUser
 );
+
+/** 로그아웃 **/
 usersRouter.post('/sign-out', refreshTokenMiddleware, userController.logOut)
+
 export { usersRouter };
