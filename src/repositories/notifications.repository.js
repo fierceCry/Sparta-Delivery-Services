@@ -7,10 +7,8 @@ export class NotificationRepository {
     userId,
     restaurantId,
     customerordersstorageId,
-    notificationMessage
+    notificationMessage,
   }) => {
-    console.log('notificationsCreate:', userId, customerordersstorageId, restaurantId, notificationMessage); // 디버깅 메시지
-    console.log(customerordersstorageId)
     return await this.prisma.notifications.create({
       data: {
         userId: +userId,
@@ -20,5 +18,4 @@ export class NotificationRepository {
       },
     });
   };
-  
 }

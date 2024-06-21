@@ -24,18 +24,17 @@ export class UserRepository {
   };
 
   updateUser = async (id, name, nickname, phoneNumber, address) => {
-    const user = await this.prisma.Users.update({
+    return await this.prisma.Users.update({
       where: { id: +id },
       data: {
         name,
         nickname,
         phoneNumber,
         address,
-        updatedAt: new Date(),
       },
     });
-    return user;
   };
+  
   logOut = async(id, role)=>{
     if (role === USER_ROLES.CUSTOMER) {
       return this.prisma.users.delete({

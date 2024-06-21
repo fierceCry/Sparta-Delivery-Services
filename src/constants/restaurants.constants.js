@@ -6,3 +6,8 @@ export const sortOption = {
 export const getSort = (option) => {
   return sortOption[option];
 };
+
+export const SORT = {
+  GET_RANKINGS:  'totalprice',
+  GET_SORT: 'desc'
+}

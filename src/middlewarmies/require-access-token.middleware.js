@@ -10,8 +10,8 @@ const validateToken = async (token, secretKey) => {
   try {
     const payload = jwt.verify(token, secretKey);
     return payload;
-  } catch (err) {
-    if (err.name === 'TokenExpiredError') {
+  } catch (error) {
+    if (error.name === 'TokenExpiredError') {
       return 'expired';
     } else {
       return 'JsonWebTokenError';
@@ -38,8 +38,8 @@ const authMiddleware = async (req, res, next) => {
     } else if (payload === 'JsonWebTokenError') {
       throw new HttpError.Unauthorized('인증 정보가 유효하지 않습니다.');
     }
-    const {id, role} = payload
-    const user = await userRepository.findByIdAndRole({id, role});
+    const { id, role } = payload;
+    const user = await userRepository.findByIdAndRole({ id, role });
     if (!user) {
       throw new HttpError.NotFound('인증 정보와 일치하는 사용자가 없습니다.');
     }

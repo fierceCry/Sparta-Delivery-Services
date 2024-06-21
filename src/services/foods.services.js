@@ -6,8 +6,8 @@ export class FoodsService {
     this.foodsRepository = foodsRepository;
   }
 
-  create = async ({ restaurantId, name, images }, price) => {
-    if (images.length === 0) {
+  create = async ({ restaurantId, name, images, price}) => {
+    if (!images.length) {
       throw new HttpError.NotFound('이미지가 업로드되지 않았습니다.');
     }
 
@@ -15,13 +15,12 @@ export class FoodsService {
     const imageUrl = await Promise.all(
       images.map((image) => uploadImageS3(image))
     );
-    const data = await this.foodsRepository.create({
+    return await this.foodsRepository.create({
       restaurantId: parseInt(restaurantId, 10),
       name,
       price: parseInt(price, 10),
       imageUrl: imageUrl,
     });
-    return data;
   };
 
   getFoodsByRestaurant = async (restaurantId) => {
@@ -31,7 +30,7 @@ export class FoodsService {
     return await this.foodsRepository.findManyByRestaurant(restaurantId);
   };
 
-  update = async ({ restaurantId, foodId, name, images }, price) => {
+  update = async ({ restaurantId, foodId, name, images, price}) => {
     const parsedRestaurantId = parseInt(restaurantId, 10);
     const parsedFoodId = parseInt(foodId, 10);
 
@@ -53,7 +52,7 @@ export class FoodsService {
       images.map((image) => uploadImageS3(image))
     );
 
-    const data = await this.foodsRepository.update({
+    return await this.foodsRepository.update({
       where: {
         id_restaurantId: {
           id: parsedFoodId,
@@ -66,7 +65,6 @@ export class FoodsService {
         imageUrl: imageUrl,
       },
     });
-    return data;
   };
 
   deleteFood = async (restaurantId, foodId) => {

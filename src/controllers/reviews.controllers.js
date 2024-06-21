@@ -12,7 +12,6 @@ export class ReviewsController {
       const { customerordersstorageId } = req.params;
       const { rate, content } = req.body;
       const images = req.files;
-
       const data = await this.reviewsService.create(
         user,
         customerordersstorageId,

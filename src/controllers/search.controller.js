@@ -4,13 +4,13 @@ export class SearchController {
   constructor(searchService) {
     this.searchService = searchService;
   }
-  Search = async (req, res, next) => {
+  search = async (req, res, next) => {
     try {
       const { data } = req.body;
 
       const searchSystem = await this.searchService.searchSystem(data);
 
-      return res.status(HTTP_STATUS.OK).json({ searchSystem });
+      return res.status(HTTP_STATUS.OK).json({ data: searchSystem });
     } catch (error) {
       next(error);
     }

@@ -7,14 +7,6 @@ const redisClient = redis.createClient({
   legacyMode: true,
 });
 
-redisClient.on('connect', () => {
-  console.info('Redis 연결에 성공했습니다.');
-});
-
-redisClient.on('error', (err) => {
-  console.error('Redis 연결에 실패하였습니다.', err);
-});
-
 redisClient
   .connect()
   .then(() => {
@@ -25,4 +17,5 @@ redisClient
   });
 
 const redisCli = redisClient.v4
+
 export { redisCli };

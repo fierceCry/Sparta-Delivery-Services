@@ -6,7 +6,6 @@ export class AuthRepository {
   }
 
   findByUserId = async (userId) => {
-    console.log(userId)
     return await this.prisma.users.findUnique({
       where: { id: +userId },
     });
@@ -17,6 +16,7 @@ export class AuthRepository {
       where: { id: +userId },
     });
   };
+
   findByEmail = async ({ email }) => {
     return this.prisma.users.findFirst({
       where: { email: email },

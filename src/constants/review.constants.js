@@ -28,7 +28,7 @@ export function getStarRating(rating) {
       return Rating.FIVE;
   }
 }
-//전수원추가 24-06-20
+
 export const NumRating = {
   ONE: 1,
   TWO: 2,

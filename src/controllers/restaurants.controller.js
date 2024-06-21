@@ -1,5 +1,5 @@
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
-import { HttpError } from '../errors/http.error.js';
+import { SORT } from '../constants/restaurants.constants.js';
 
 export class RestaurantsController {
   constructor(restaurantsService) {
@@ -9,12 +9,10 @@ export class RestaurantsController {
   getAllRestaurants = async (req, res, next) => {
     try {
       const data = await this.restaurantsService.getAllRestaurants();
-      if (!data) {
-        throw new HttpError.NotFound('데이터가 존재하지않습니다.');
-      }
+
       return res
         .status(HTTP_STATUS.OK)
-        .json({ message: '정상적으로 정보조회가 완료되었습니다.', data });
+        .json({ message: '정상적으로 정보조회가 완료되었습니다.', data: data });
     } catch (err) {
       next(err);
     }
@@ -23,13 +21,14 @@ export class RestaurantsController {
   getRestaurants = async (req, res) => {
     const restaurant = req.user;
 
-    const data = { ...restaurant, bossPassword: undefined };
+    const data = { ...restaurant, bossPassword: _ };
 
     return res.status(HTTP_STATUS.OK).json({
       message: '정상적으로 정보조회가 완료되었습니다.',
-      data,
+      data: data,
     });
   };
+
   //가게정보수정
   updateRestaurants = async (req, res) => {
     const { id } = req.user;
@@ -53,14 +52,15 @@ export class RestaurantsController {
       data: restaurant,
     });
   };
+
   //가게랭킹조회(최대5개)
   getRankings = async (req, res) => {
-    const { sort = 'totalprice' } = req.body;
+    const { sort = SORT.GET_RANKINGS } = req.body;
 
     const data = await this.restaurantsService.getRankings(sort);
 
     return res
       .status(HTTP_STATUS.OK)
-      .json({ message: '정상적으로 조회가 완료되었습니다.', data });
+      .json({ message: '정상적으로 조회가 완료되었습니다.', data: data });
   };
 }

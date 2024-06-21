@@ -4,8 +4,10 @@ import { prisma } from '../src/utils/utils.prisma.js';
 const HASH_SALT_ROUNDS = 10; // 해싱에 사용할 솔트(rounds) 수
 
 async function main() {
+  // 비밀번호 해싱
   const hashedPassword = await bcrypt.hash('123456', HASH_SALT_ROUNDS);
 
+  // 사용자 생성 또는 업데이트
   const user1 = await prisma.users.upsert({
     where: { email: 'sprata@naver.com' },
     update: {},
@@ -34,6 +36,7 @@ async function main() {
     },
   });
 
+  // 레스토랑 생성 또는 업데이트
   const restaurant1 = await prisma.restaurants.upsert({
     where: { bossEmail: 'restaurant1@naver.com' },
     update: {},
@@ -64,54 +67,21 @@ async function main() {
     },
   });
 
-  const foods1 = await prisma.foods.create({
-    data: {
-      restaurantId: restaurant1.id,
-      name: '양념치킨 햄버거',
-      price: 1,
-      imageUrl: { data: 'https://google.com' },
-    },
-  });
+  // 음식 데이터 생성
+  const foodsData = [
+    { restaurantId: restaurant1.id, name: '양념치킨 햄버거', price: 10000, imageUrl: { url: 'https://example.com/food1.jpg' } },
+    { restaurantId: restaurant1.id, name: '햄버거 양념피자', price: 15000, imageUrl: { url: 'https://example.com/food2.jpg' } },
+    { restaurantId: restaurant1.id, name: '맛있는 타코야끼', price: 8000, imageUrl: { url: 'https://example.com/food3.jpg' } },
+    { restaurantId: restaurant1.id, name: '불고기 버거', price: 12000, imageUrl: { url: 'https://example.com/food4.jpg' } },
+    { restaurantId: restaurant2.id, name: '연어 초밥', price: 20000, imageUrl: { url: 'https://example.com/food5.jpg' } },
+    { restaurantId: restaurant2.id, name: '연어 롤', price: 18000, imageUrl: { url: 'https://example.com/food6.jpg' } },
+    { restaurantId: restaurant2.id, name: '텐동', price: 16000, imageUrl: { url: 'https://example.com/food7.jpg' } },
+    { restaurantId: restaurant2.id, name: '우동', price: 14000, imageUrl: { url: 'https://example.com/food8.jpg' } }
+  ];
 
-  const foods2 = await prisma.foods.create({
-    data: {
-      restaurantId: restaurant1.id,
-      name: "햄버거 앙념피자",
-      price: 2,
-      imageUrl: { data: "https://google.com" },
-    }
-  })
+  const foods = await Promise.all(foodsData.map(data => prisma.foods.create({ data })));
 
-  const foods3 = await prisma.foods.create({
-    data: {
-
-      restaurantId: restaurant1.id,
-      name: "맛있는 타코야끼",
-      price: 2,
-      imageUrl: { data: "https://google.com" },
-    }
-  })
-
-  const foods4 = await prisma.foods.create({
-    data: {
-
-      restaurantId: restaurant2.id,
-      name: "연어 초밥들",
-      price: 2,
-      imageUrl: { data: "https://google.com" },
-    }
-  })
-
-  const foods5 = await prisma.foods.create({
-    data: {
-
-      restaurantId: restaurant2.id,
-      name: "연어의 롤",
-      price: 2,
-      imageUrl: { data: 'https://google.com' },
-    },
-  });
-
+  // 주문 데이터 생성
   const order1 = await prisma.orders.create({
     data: {
       userId: user1.id,
@@ -128,11 +98,12 @@ async function main() {
     },
   });
 
+  // 리뷰 데이터 생성
   const review1 = await prisma.reviews.create({
     data: {
       rate: "ONE",
       content: "별로에요",
-      imageUrl: JSON.stringify(["https://google.com"]), // JSON 형식으로 변환
+      imageUrl: JSON.stringify(["https://example.com/review1.jpg"]), // JSON 형식으로 변환
       users: {
         connect: {
           id: user1.id // 올바른 필드명 사용
@@ -150,11 +121,12 @@ async function main() {
       }
     }
   });
+
   const review2 = await prisma.reviews.create({
     data: {
       rate: "ONE",
       content: "별로에요",
-      imageUrl: JSON.stringify(["https://google.com"]), // JSON 형식으로 변환
+      imageUrl: JSON.stringify(["https://example.com/review2.jpg"]), // JSON 형식으로 변환
       users: {
         connect: {
           id: user2.id // 올바른 필드명 사용
@@ -178,8 +150,9 @@ async function main() {
     user2,
     restaurant1,
     restaurant2,
-    foods1,
-    foods2,
+    foods,
+    order1,
+    order2,
     review1,
     review2,
   });

@@ -78,7 +78,7 @@ export class AuthService {
 
     const hashedPassword = bcrypt.hashSync(bossPassword, HASH_SALT_ROUNDS);
 
-    const data = await this.authRepository.createRestaurantUser({
+    return await this.authRepository.createRestaurantUser({
       bossName,
       bossEmail,
       hashedPassword,
@@ -88,8 +88,6 @@ export class AuthService {
       restaurantPhoneNumber,
       emailValidator,
     });
-
-    return data;
   }
 
   async signIn({ email, password, role }) {
@@ -146,7 +144,7 @@ export class AuthService {
     const emailCode = generateRandomCode();
 
     const key = `${email}:${role}`;
-    await redisCli.set(key, emailCode, { EX: 200 });
+    await redisCli.set(key, emailCode, { EX: 300 });
 
     const mailOptions = {
       to: email,
@@ -177,16 +175,15 @@ export class AuthService {
     };
     this.transporter.sendMail(mailOptions);
   }
-
+  
   verifyEmail = async ({ email, emailCode, role }) => {
     const key = `${email}:${role}`;
     const data = await redisCli.get(key);
-    if (!data) {
-      throw new HttpError.BadRequest('인증코드가 만료되었습니다.');
+  
+    if (!data || data !== emailCode) {
+      throw new HttpError.BadRequest(!data ? '인증코드가 만료되었습니다.' : '인증코드가 유효하지 않습니다.');
     }
-    if (data !== emailCode) {
-      throw new HttpError.BadRequest('인증코드가 유효하지 않습니다.');
-    }
+  
     await redisCli.del(key);
   };
 }

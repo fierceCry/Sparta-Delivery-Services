@@ -6,8 +6,7 @@ export class FoodsRepository {
   }
 
   create = async ({ restaurantId, name, price, imageUrl }) => {
-    console.log(imageUrl)
-    const data = await this.prisma.foods.create({
+    return await this.prisma.foods.create({
       data: {
         restaurantId,
         name,
@@ -15,7 +14,6 @@ export class FoodsRepository {
         imageUrl,
       },
     });
-    return data;
   };
 
   findManyByRestaurant = async (restaurantId) => {
