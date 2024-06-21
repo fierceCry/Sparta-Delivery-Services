@@ -1,10 +1,8 @@
 # 뉴 더 그레잇 디리버리 시스템
 
 ## 프로젝트 소개
-**프로젝트 이름**: 뉴 더 그레잇 디리버리 시스템  
 **한 줄 정리**: 배달 앱 기능 만들어보기  
 **내용**: 우리의 배달 시스템 프로젝트는 음식, 소매, 물류 등 다양한 배달 서비스의 효율성을 극대화하고, 고객과 사업자 모두에게 편리한 통합 배달 관리 솔루션을 제공하는 것을 목표로 합니다.  
-**GITHUB**: [Sparta-Delivery-Services](https://github.com/fierceCry/Sparta-Delivery-Services)
 
 ## 팀원 소개
 - **팀장**: 이지훈
@@ -15,7 +13,6 @@
 
 ## 개발 환경
 - **운영체제**: MAC/WINDOW
-- **FRONTEND**: 미정
 - **BACKEND**: PRISMA, REDIS, WEBSOCKET, NODEJS, EXPRESS
 - **TOOL**: VSCODE, INSOMNIA, POSTMAN
 - **PUBLISH**: PM2, AWS/RDS, AWS/EC2
